@@ -1,1 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { padding-bottom: 76px; }
+        .nav-btn { color: #64748b; }
+        .nav-btn.active { color: #4338ca; font-weight: 700; }
+        .nav-btn.active i { transform: translateY(-1px); }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen">
+
+    <!-- LOGIN -->
+    <div id="login-screen" class="fixed inset-0 bg-gradient-to-br from-indigo-800 to-blue-900 flex items-center justify-center z-[100] p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-7 space-y-5">
+            <div class="text-center">
+                <div id="login-logo" class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3 overflow-hidden">
+                    <i class="fa-solid fa-user-graduate text-3xl text-indigo-700"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-indigo-900">Student Portal</h1>
+                <p class="text-sm text-slate-500 mt-1" id="login-school-name">طالب علم پورٹل</p>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Roll ID</label>
+                <input type="text" id="login-id" autocapitalize="characters" placeholder="e.g. SR-8077" class="w-full px-3 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">PIN</label>
+                <input type="password" id="login-pin" inputmode="numeric" placeholder="6-digit PIN" class="w-full px-3 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                <p class="text-xs text-slate-400 mt-1">Roll ID and PIN are written on your school ID card.</p>
+            </div>
+            <button id="login-btn" onclick="handleLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition">
+                <i class="fa-solid fa-right-to-bracket mr-2"></i>Login
+            </button>
+            <p id="login-error" class="text-sm text-rose-600 text-center hidden"></p>
+        </div>
+    </div>
+
+    <!-- APP -->
+    <div id="main-app" class="hidden">
+        <header class="bg-gradient-to-r from-indigo-800 to-blue-900 text-white px-4 pt-4 pb-5 shadow">
+            <div class="max-w-2xl mx-auto flex items-center gap-3">
+                <div id="hdr-logo" class="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center overflow-hidden shrink-0"><i class="fa-solid fa-graduation-cap"></i></div>
+                <div class="min-w-0 flex-1">
+                    <p id="hdr-school" class="font-bold truncate"></p>
+                    <p id="hdr-name" class="text-xs text-indigo-100 truncate"></p>
+                </div>
+                <button onclick="refreshAll()" class="w-9 h-9 rounded-full bg-white/15 hover:bg-white/25" title="Refresh"><i class="fa-solid fa-rotate"></i></button>
+                <button onclick="logout()" class="w-9 h-9 rounded-full bg-rose-500/90 hover:bg-rose-600" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </header>
+
+        <main class="max-w-2xl mx-auto p-4 space-y-4">
+            <p id="load-status" class="text-xs text-center text-slate-400"></p>
+            <section id="tab-home" class="tab space-y-4"></section>
+            <section id="tab-timetable" class="tab hidden space-y-4"></section>
+            <section id="tab-homework" class="tab hidden space-y-3"></section>
+            <section id="tab-attendance" class="tab hidden space-y-4"></section>
+            <section id="tab-results" class="tab hidden space-y-4"></section>
+            <section id="tab-messages" class="tab hidden space-y-3"></section>
+        </main>
+
+        <nav class="fixed bottom-0 inset-x-0 bg-white border-t shadow-lg z-50">
+            <div class="max-w-2xl mx-auto grid grid-cols-6 text-[10px]">
+                <button data-tab="home" onclick="showTab('home')" class="nav-btn active py-2 flex flex-col items-center gap-0.5"><i class="fa-solid fa-house text-base"></i>Home</button>
+                <button data-tab="timetable" onclick="showTab('timetable')" class="nav-btn py-2 flex flex-col items-center gap-0.5"><i class="fa-solid fa-table-cells text-base"></i>Timetable</button>
+                <button data-tab="homework" onclick="showTab('homework')" class="nav-btn py-2 flex flex-col items-center gap-0.5"><i class="fa-solid fa-book-open text-base"></i>Homework</button>
+                <button data-tab="attendance" onclick="showTab('attendance')" class="nav-btn py-2 flex flex-col items-center gap-0.5"><i class="fa-solid fa-check-to-slot text-base"></i>Attendance</button>
+                <button data-tab="results" onclick="showTab('results')" class="nav-btn py-2 flex flex-col items-center gap-0.5"><i class="fa-solid fa-award text-base"></i>Results</button>
+                <button data-tab="messages" onclick="showTab('messages')" class="nav-btn py-2 flex flex-col items-center gap-0.5"><i class="fa-solid fa-envelope text-base"></i>Notices</button>
+            </div>
+        </nav>
+    </div>
+
+<script>
+// ===================== SETTINGS =====================
+const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyAXhTB5FmH5l29PrXszO03xEt4dEEW_GLQ",
+    authDomain: "saplings-91d93.firebaseapp.com",
+    projectId: "saplings-91d93",
+    storageBucket: "saplings-91d93.firebasestorage.app",
+    messagingSenderId: "918074017839",
+    appId: "1:918074017839:web:7897a77337619e9df61eda",
+    // Realtime Database address. If the Firebase console shows a different address
+    // (for example ...asia-southeast1.firebasedatabase.app), paste it here.
+    databaseURL: "https://saplings-91d93-default-rtdb.firebaseio.com"
+};
+const FB = FIREBASE_CONFIG.databaseURL.replace(/\/$/, '');
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DEFAULT_AVATAR = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23e0e7ff'/%3E%3Ccircle cx='50' cy='38' r='18' fill='%236366f1'/%3E%3Cpath d='M18 90c0-18 14-30 32-30s32 12 32 30z' fill='%236366f1'/%3E%3C/svg%3E";
+
+// ===================== HELPERS =====================
+function esc(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function(c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+}
+function $(id) { return document.getElementById(id); }
+function mkey(sub) { return String(sub).replace(/[.$#\[\]\/\\]/g, '_'); }
+function toList(x) {
+    if (Array.isArray(x)) return x.filter(function(v) { return v !== null && v !== undefined; });
+    if (x && typeof x === 'object') return Object.keys(x).map(function(k) { return x[k]; });
+    return [];
+}
+function isoToday() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function gradeFor(p) { return p >= 80 ? 'A+' : p >= 70 ? 'A' : p >= 60 ? 'B' : p >= 50 ? 'C' : p >= 40 ? 'D' : 'F'; }
+
+// ===================== SECURE LOGIN + CLOUD (read only) =====================
+// The student signs in with Firebase Authentication (Roll ID + PIN). The PIN is checked by Google, never stored
+// in the database and never compared in this page. Every read carries a sign-in token and the database rules
+// decide that this student can read only their own record and their own class notices.
+const AUTH_KEY = FIREBASE_CONFIG.apiKey;
+const AUTH_ROLE = 'student';
+let AUTH = null;   // { idToken, refreshToken, expiresAt, uid }
+function idKey(id) { return String(id).trim().toLowerCase().replace(/[^a-z0-9._-]/g, '_'); }
+function loginEmail(id) { return idKey(id) + '@' + AUTH_ROLE + '.saira.invalid'; }
+function pinPassword(pin) { return 'PIN' + String(pin).trim(); }
+function saveSession(id) { try { localStorage.setItem('saira_student_login', JSON.stringify({ id: id, rt: AUTH.refreshToken })); } catch (e) { /* storage blocked */ } }
+async function authSignIn(id, pin) {
+    const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + AUTH_KEY, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: loginEmail(id), password: pinPassword(pin), returnSecureToken: true })
+    });
+    const j = await res.json();
+    if (!res.ok) { const m = (j.error && j.error.message) || ''; const e = new Error(m); e.code = m; throw e; }
+    AUTH = { idToken: j.idToken, refreshToken: j.refreshToken, expiresAt: Date.now() + Number(j.expiresIn || 3600) * 1000, uid: j.localId };
+}
+async function authRefresh(rt) {
+    const res = await fetch('https://securetoken.googleapis.com/v1/token?key=' + AUTH_KEY, {
+        method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(rt)
+    });
+    const j = await res.json();
+    if (!res.ok) throw new Error('SESSION_EXPIRED');
+    AUTH = { idToken: j.id_token, refreshToken: j.refresh_token, expiresAt: Date.now() + Number(j.expires_in || 3600) * 1000, uid: j.user_id };
+}
+async function authToken() {
+    if (!AUTH) throw new Error('NOAUTH');
+    if (Date.now() > AUTH.expiresAt - 90000) { await authRefresh(AUTH.refreshToken); if (S && S.stu) saveSession(S.stu.id); }
+    return AUTH.idToken;
+}
+function authErrorText(e) {
+    const c = String((e && (e.code || e.message)) || '');
+    if (/EMAIL_NOT_FOUND|INVALID_PASSWORD|INVALID_LOGIN_CREDENTIALS|USER_DISABLED/.test(c)) return 'Wrong Roll ID or PIN. Please check and try again.';
+    if (/TOO_MANY_ATTEMPTS/.test(c)) return 'Too many attempts. Please wait a few minutes and try again.';
+    if (/NOROLE/.test(c)) return 'This account is not active yet. Please ask the school office.';
+    if (/NOVIEW/.test(c)) return 'Your information has not been published yet. Please ask the school office.';
+    return 'Could not connect. Please check your internet and try again.';
+}
+function dbUrl(path) { return FB + '/' + path.split('/').map(encodeURIComponent).join('/') + '.json'; }
+async function fbGet(path) {
+    const res = await fetch(dbUrl(path) + '?auth=' + encodeURIComponent(await authToken()));
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+}
+async function fbGetPublic(path) {
+    const res = await fetch(dbUrl(path));
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+}
+// ===================== STATE =====================
+let S = null;   // everything about the logged-in student
+
+let VIEW = null;   // this student's published record (studentView/<id>)
+async function loadStudent(id) {
+    const role = await fbGet('roles/' + AUTH.uid);
+    if (!role || role.role !== 'student' || role.id !== id) throw new Error('NOROLE');
+    VIEW = await fbGet('studentView/' + id);
+    if (!VIEW || !VIEW.stu) throw new Error('NOVIEW');
+    return VIEW.stu;
+}
+async function loadAll(stu) {
+    const cls = stu.className, br = stu.branchId || 'main', sid = stu.id;
+    const safe = function(p, fallback) { return p.catch(function() { return fallback; }); };
+    const r = await Promise.all([
+        safe(fbGet('pub'), {}),
+        safe(fbGet('classFeed/' + br + '|' + cls), {})
+    ]);
+    const pub = r[0] || {}, feed = r[1] || {}, view = VIEW || {};
+    const settings = pub.settings || {}, branches = toList(pub.branches), tests = toList(pub.examTests), subjects = toList(pub.subjects);
+    const periodTimes = toList(pub.periodTimes), timetable = feed.timetable || null;
+    const homework = toList(feed.homeworks).filter(function(h) { return h.className === cls && (h.branchId || 'main') === br; });
+    // attendance (present days)
+    const attMap = {};
+    toList(view.attendance).forEach(function(a) { if (a && a.date) attMap[a.date] = a; });
+    // messages for this class
+    const messages = toList(feed.messages).filter(function(m) {
+        const forMe = m.toClass === 'ALL' || m.toClass === 'STUDENTS' || m.toClass === cls;
+        const branchOk = !m.branchId || m.branchId === 'ALL' || m.branchId === br;
+        return m && m.id && forMe && branchOk;
+    }).sort(function(a, b) { return String(b.id).localeCompare(String(a.id)); });
+    // marks of this student for every test
+    const marksByTest = {};
+    tests.forEach(function(t) { marksByTest[t.id] = Object.assign({}, (view.marks || {})[t.id] || {}); });
+    S = { stu: stu, settings: settings, branches: branches, tests: tests, subjects: subjects, periodTimes: periodTimes, timetable: timetable,
+          homework: homework, attendance: attMap, messages: messages, marks: marksByTest, tab: 'home', day: null, month: null, testId: null };
+}
+// ===================== LOGIN =====================
+function showLoginError(msg) { const e = $('login-error'); e.innerText = msg; e.classList.remove('hidden'); }
+
+async function handleLogin(auto) {
+    const id = $('login-id').value.trim().toUpperCase();
+    const pin = $('login-pin').value.trim();
+    $('login-error').classList.add('hidden');
+    if (!id) return showLoginError('Please enter Roll ID' + (auto ? '.' : ' and PIN.'));
+    if (!auto && !pin) return showLoginError('Please enter Roll ID and PIN.');
+    const btn = $('login-btn'); btn.disabled = true;
+    try {
+        if (auto === 'saved') { /* token already restored in onload */ } else await authSignIn(id, pin);
+        const stu = await loadStudent(id);
+        saveSession(id);
+        await openApp(stu);
+    } catch (e) {
+        AUTH = null;
+        showLoginError(auto ? 'Please sign in again.' : authErrorText(e));
+    }
+    btn.disabled = false;
+}
+
+async function openApp(stu) {
+    await loadAll(stu);
+    $('login-screen').classList.add('hidden');
+    $('main-app').classList.remove('hidden');
+    $('hdr-school').innerText = S.settings.name || 'School';
+    $('hdr-name').innerText = stu.name + ' • ' + stu.className;
+    if (S.settings.logo) $('hdr-logo').innerHTML = '<img src="' + esc(S.settings.logo) + '" class="w-full h-full object-cover">';
+    showTab('home');
+}
+
+async function refreshAll() {
+    if (!S) return;
+    $('load-status').innerText = 'Refreshing...';
+    try {
+        const stu = await loadStudent(S.stu.id);
+        if (stu) await loadAll(stu);
+        showTab(S.tab);
+        $('load-status').innerText = '';
+    } catch (e) { $('load-status').innerText = 'Could not refresh. Check your internet.'; }
+}
+
+function logout() {
+    localStorage.removeItem('saira_student_login');
+    AUTH = null; VIEW = null; S = null;
+    $('main-app').classList.add('hidden');
+    $('login-screen').classList.remove('hidden');
+    $('login-pin').value = '';
+}
+
+
+// ===================== NEW-NOTICE / HOMEWORK-DONE TRACKING (stored on this phone) =====================
+function lsGet(k, fb) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? fb : v; } catch (e) { return fb; } }
+function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage full or blocked */ } }
+function seenKey() { return 'saira_seen_msgs_' + (S && S.stu ? S.stu.id : ''); }
+function hwDoneKey() { return 'saira_hw_done_' + (S && S.stu ? S.stu.id : ''); }
+function hwSeenKey() { return 'saira_hw_seen_' + (S && S.stu ? S.stu.id : ''); }
+function newNoticeCount() {
+    const seen = lsGet(seenKey(), []);
+    return S.messages.filter(function(m) { return seen.indexOf(m.id) < 0; }).length;
+}
+function pendingHomework() {
+    const today = isoToday(), done = lsGet(hwDoneKey(), {});
+    return S.homework.filter(function(h) { return String(h.dueDate) >= today && !done[h.id]; });
+}
+function newHomeworkCount() {
+    const seen = lsGet(hwSeenKey(), []);
+    return pendingHomework().filter(function(h) { return seen.indexOf(h.id) < 0; }).length;
+}
+function markNoticesSeen() { lsSet(seenKey(), S.messages.map(function(m) { return m.id; })); }
+function markHomeworkSeen() { lsSet(hwSeenKey(), S.homework.map(function(h) { return h.id; })); }
+function toggleHwDone(id) {
+    const done = lsGet(hwDoneKey(), {});
+    if (done[id]) delete done[id]; else done[id] = true;
+    lsSet(hwDoneKey(), done);
+    renderHomework();
+    updateNavDots();
+}
+function updateNavDots() {
+    if (!S) return;
+    const set = function(tab, n) {
+        const b = document.querySelector('.nav-btn[data-tab="' + tab + '"]');
+        if (!b) return;
+        let d = b.querySelector('.nav-dot');
+        if (!n) { if (d) d.remove(); return; }
+        if (!d) {
+            d = document.createElement('span');
+            d.className = 'nav-dot';
+            d.style.cssText = 'position:absolute;top:4px;right:22%;min-width:16px;height:16px;padding:0 4px;border-radius:9999px;background:#e11d48;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;';
+            b.style.position = 'relative';
+            b.appendChild(d);
+        }
+        d.innerText = n > 9 ? '9+' : n;
+    };
+    set('messages', newNoticeCount());
+    set('homework', newHomeworkCount());
+}
+
+// ===================== TABS =====================
+function showTab(name) {
+    S.tab = name;
+    document.querySelectorAll('.tab').forEach(function(el) { el.classList.add('hidden'); });
+    $('tab-' + name).classList.remove('hidden');
+    document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-tab') === name); });
+    ({ home: renderHome, timetable: renderTimetable, homework: renderHomework, attendance: renderAttendance, results: renderResults, messages: renderMessages })[name]();
+    if (name === 'messages') markNoticesSeen();
+    if (name === 'homework') markHomeworkSeen();
+    updateNavDots();
+    window.scrollTo(0, 0);
+}
+
+function card(inner, extra) { return '<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 ' + (extra || '') + '">' + inner + '</div>'; }
+function heading(en, ur) { return '<h2 class="font-bold text-slate-800 flex items-baseline gap-2">' + esc(en) + ' <span class="text-xs font-normal text-slate-400">' + esc(ur) + '</span></h2>'; }
+function branchName(id) {
+    const b = S.branches.find(function(x) { return x.id === id; });
+    return b ? b.name : (id || '');
+}
+function cellOf(v) {
+    if (v && typeof v === 'object') return { s: v.s || '', n: v.n || '' };
+    if (typeof v === 'string' && v) return { s: v, n: '' };
+    return { s: '', n: '' };
+}
+function dayCells(day) {
+    const tt = S.timetable || {};
+    const arr = toList_keepHoles((tt.days || {})[day]);
+    const periods = tt.periods || 8;
+    const out = [];
+    for (let i = 0; i < periods; i++) out.push({ i: i, time: S.periodTimes[i] || '', cell: cellOf(arr[i]) });
+    return out;
+}
+function toList_keepHoles(x) {
+    if (Array.isArray(x)) return x;
+    if (x && typeof x === 'object') { const a = []; Object.keys(x).forEach(function(k) { a[Number(k)] = x[k]; }); return a; }
+    return [];
+}
+function todayDay() {
+    const d = new Date().getDay();   // 0 = Sunday
+    return d === 0 ? 'Mon' : DAYS[d - 1] || 'Mon';
+}
+
+// ---------- Home ----------
+function renderHome() {
+    const s = S.stu, today = isoToday();
+    const todayCells = dayCells(todayDay()).filter(function(c) { return c.cell.s; });
+    const pending = pendingHomework().length;
+    const newN = newNoticeCount();
+    const unpaid = s.feeStatus === 'Unpaid';
+    let h = card('<div class="flex items-center gap-4"><img src="' + esc(s.photo || DEFAULT_AVATAR) + '" class="w-20 h-20 rounded-xl object-cover border-2 border-indigo-100">' +
+        '<div class="min-w-0"><p class="text-lg font-bold text-slate-800 truncate">' + esc(s.name) + '</p>' +
+        '<p class="text-sm text-slate-600">' + esc(s.className) + ' • ' + esc(branchName(s.branchId)) + '</p>' +
+        '<p class="text-xs text-indigo-600 font-semibold mt-1">' + esc(s.id) + '</p></div></div>' +
+        '<div class="grid grid-cols-2 gap-2 mt-4 text-sm">' +
+        '<div class="bg-slate-50 rounded-lg p-2"><p class="text-[11px] text-slate-400">Father</p><p class="font-medium">' + esc(s.father) + '</p></div>' +
+        '<div class="bg-slate-50 rounded-lg p-2"><p class="text-[11px] text-slate-400">Phone</p><p class="font-medium">' + esc(s.phone) + '</p></div></div>');
+    h += card('<div class="flex items-center justify-between"><div><p class="text-xs text-slate-400">Monthly Fee</p><p class="text-lg font-bold">Rs. ' + esc((Number(s.fee) || 0).toLocaleString()) + '</p></div>' +
+        '<span class="px-3 py-1.5 rounded-full text-xs font-bold ' + (unpaid ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700') + '">' + (unpaid ? 'UNPAID' : 'PAID') + '</span></div>');
+    h += '<div class="grid grid-cols-2 gap-3">' +
+        '<button onclick="showTab(\'homework\')" class="text-left">' + card('<p class="text-xs text-slate-400">Homework to do</p><p class="text-2xl font-bold text-indigo-700">' + pending + '</p>') + '</button>' +
+        '<button onclick="showTab(\'messages\')" class="text-left">' + card('<p class="text-xs text-slate-400">Notices</p><p class="text-2xl font-bold text-indigo-700">' + S.messages.length + '</p>' + (newN ? '<p class="text-[11px] font-bold text-rose-600 mt-0.5">' + newN + ' new</p>' : '<p class="text-[11px] text-slate-400 mt-0.5">All read</p>')) + '</button></div>';
+    h += card(heading("Today's Periods", 'آج کا ٹائم ٹیبل') + '<div class="mt-2 space-y-1.5">' + (todayCells.length ? todayCells.map(function(c) {
+        return '<div class="flex items-center gap-3 text-sm"><span class="w-16 text-[11px] text-slate-400">P' + (c.i + 1) + (c.time ? '<br>' + esc(c.time) : '') + '</span><span class="font-semibold">' + esc(c.cell.s) + '</span><span class="text-xs text-slate-500">' + esc(c.cell.n) + '</span></div>';
+    }).join('') : '<p class="text-sm text-slate-400">No periods found for today.</p>') + '</div>');
+    $('tab-home').innerHTML = h;
+}
+
+// ---------- Timetable ----------
+function renderTimetable() {
+    if (!S.day) S.day = todayDay();
+    const tabs = DAYS.map(function(d) {
+        return '<button onclick="S.day=\'' + d + '\';renderTimetable()" class="px-3 py-1.5 rounded-full text-xs font-semibold ' + (d === S.day ? 'bg-indigo-600 text-white' : 'bg-white border text-slate-600') + '">' + d + '</button>';
+    }).join('');
+    const cells = dayCells(S.day);
+    const any = cells.some(function(c) { return c.cell.s; });
+    $('tab-timetable').innerHTML = heading('Timetable', 'ٹائم ٹیبل') + '<div class="flex gap-2 overflow-x-auto pb-1">' + tabs + '</div>' +
+        card(any ? cells.map(function(c) {
+            return '<div class="flex items-center gap-3 py-2 border-b last:border-0"><div class="w-16 text-center"><p class="text-xs font-bold text-indigo-700">Period ' + (c.i + 1) + '</p><p class="text-[10px] text-slate-400">' + esc(c.time) + '</p></div>' +
+                (c.cell.s ? '<div><p class="font-semibold text-sm">' + esc(c.cell.s) + '</p><p class="text-xs text-slate-500">' + esc(c.cell.n) + '</p></div>' : '<p class="text-sm text-slate-300">—</p>') + '</div>';
+        }).join('') : '<p class="text-sm text-slate-400 text-center py-4">Timetable is not ready for this day yet.</p>');
+}
+
+// ---------- Homework ----------
+function renderHomework() {
+    const today = isoToday();
+    const doneMap = lsGet(hwDoneKey(), {});
+    const seenHw = lsGet(hwSeenKey(), []);
+    const list = S.homework.slice().sort(function(a, b) { return String(b.dueDate).localeCompare(String(a.dueDate)); });
+    const pending = list.filter(function(h) { return String(h.dueDate) >= today && !doneMap[h.id]; }).reverse();
+    const finished = list.filter(function(h) { return String(h.dueDate) >= today && doneMap[h.id]; });
+    const old = list.filter(function(h) { return String(h.dueDate) < today; });
+    const one = function(h, late) {
+        const isDone = !!doneMap[h.id];
+        const isNew = !late && !isDone && seenHw.indexOf(h.id) < 0;
+        const due = String(h.dueDate) === today ? 'Due today' : (late ? 'Past due ' + esc(h.dueDate) : 'Due ' + esc(h.dueDate));
+        return card('<div class="flex items-center justify-between gap-2"><span class="font-bold text-slate-800">' + esc(h.subject) +
+            (isNew ? ' <span class="ml-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-600 text-white">NEW</span>' : '') + '</span>' +
+            '<span class="text-[11px] font-semibold px-2 py-0.5 rounded ' + (isDone ? 'bg-emerald-100 text-emerald-700' : (late ? 'bg-slate-100 text-slate-500' : 'bg-amber-100 text-amber-700')) + '">' + (isDone ? 'Done ✓' : due) + '</span></div>' +
+            '<p class="text-sm text-slate-700 mt-1.5 whitespace-pre-line">' + esc(h.description) + '</p>' +
+            '<div class="flex items-center justify-between mt-2"><p class="text-[11px] text-slate-400">Given by ' + esc(h.assignedBy) + '</p>' +
+            (late ? '' : '<button onclick="toggleHwDone(\'' + esc(h.id) + '\')" class="text-xs font-bold px-3 py-1.5 rounded-lg ' + (isDone ? 'bg-slate-100 text-slate-600' : 'bg-emerald-600 text-white') + '">' + (isDone ? 'Undo' : '✓ Mark as Done') + '</button>') + '</div>');
+    };
+    $('tab-homework').innerHTML = heading('Homework', 'ہوم ورک') +
+        (pending.length ? pending.map(function(h) { return one(h, false); }).join('') : card('<p class="text-sm text-slate-400 text-center">No homework to do. 🎉</p>')) +
+        (finished.length ? '<p class="text-xs font-semibold text-slate-400 pt-2">Done</p>' + finished.map(function(h) { return one(h, false); }).join('') : '') +
+        (old.length ? '<p class="text-xs font-semibold text-slate-400 pt-2">Earlier homework</p>' + old.slice(0, 15).map(function(h) { return one(h, true); }).join('') : '');
+}
+
+// ---------- Attendance ----------
+function renderAttendance() {
+    const now = new Date();
+    if (!S.month) S.month = { y: now.getFullYear(), m: now.getMonth() };
+    const y = S.month.y, m = S.month.m;
+    const names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const first = new Date(y, m, 1).getDay();            // 0 = Sunday
+    const days = new Date(y, m + 1, 0).getDate();
+    let present = 0, grid = '';
+    ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(function(d) { grid += '<div class="text-[10px] text-slate-400 text-center">' + d + '</div>'; });
+    for (let i = 0; i < first; i++) grid += '<div></div>';
+    for (let d = 1; d <= days; d++) {
+        const iso = y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+        const isPresent = !!S.attendance[iso];
+        if (isPresent) present++;
+        const sunday = new Date(y, m, d).getDay() === 0;
+        grid += '<div class="text-center text-xs py-1.5 rounded ' + (isPresent ? 'bg-emerald-500 text-white font-bold' : sunday ? 'bg-slate-100 text-slate-300' : 'bg-slate-50 text-slate-600') + '">' + d + '</div>';
+    }
+    $('tab-attendance').innerHTML = heading('Attendance', 'حاضری') +
+        card('<div class="flex items-center justify-between mb-3"><button onclick="moveMonth(-1)" class="w-9 h-9 rounded-full bg-slate-100"><i class="fa-solid fa-chevron-left"></i></button>' +
+            '<p class="font-bold">' + names[m] + ' ' + y + '</p><button onclick="moveMonth(1)" class="w-9 h-9 rounded-full bg-slate-100"><i class="fa-solid fa-chevron-right"></i></button></div>' +
+            '<div class="grid grid-cols-7 gap-1">' + grid + '</div>' +
+            '<p class="text-sm mt-3"><span class="inline-block w-3 h-3 bg-emerald-500 rounded mr-1 align-middle"></span>Present days: <b>' + present + '</b></p>');
+}
+function moveMonth(step) {
+    let y = S.month.y, m = S.month.m + step;
+    if (m < 0) { m = 11; y--; } else if (m > 11) { m = 0; y++; }
+    S.month = { y: y, m: m };
+    renderAttendance();
+}
+
+// ---------- Results ----------
+function renderResults() {
+    const withMarks = S.tests.filter(function(t) { return Object.keys(S.marks[t.id] || {}).length > 0; });
+    if (!withMarks.length) { $('tab-results').innerHTML = heading('Results', 'نتیجہ') + card('<p class="text-sm text-slate-400 text-center">No results have been entered yet.</p>'); return; }
+    if (!S.testId || !withMarks.some(function(t) { return t.id === S.testId; })) S.testId = withMarks[withMarks.length - 1].id;
+    const test = withMarks.find(function(t) { return t.id === S.testId; });
+    const own = S.marks[test.id];
+    const rows = Object.keys(own).map(function(key) {
+        const sub = S.subjects.find(function(x) { return mkey(x) === key; }) || key;
+        return { name: sub, v: Number(own[key]) };
+    });
+    const total = rows.reduce(function(a, r) { return a + r.v; }, 0);
+    const max = rows.length * test.max;
+    const perc = max ? (total / max) * 100 : 0;
+    $('tab-results').innerHTML = heading('Results', 'نتیجہ') +
+        '<select onchange="S.testId=this.value;renderResults()" class="w-full px-3 py-2.5 border rounded-lg text-sm bg-white">' +
+        withMarks.map(function(t) { return '<option value="' + esc(t.id) + '"' + (t.id === test.id ? ' selected' : '') + '>' + esc(t.name) + '</option>'; }).join('') + '</select>' +
+        card('<table class="w-full text-sm"><tr class="text-[11px] text-slate-400 uppercase"><th class="text-left pb-1">Subject</th><th class="pb-1">Total</th><th class="text-right pb-1">Obtained</th></tr>' +
+            rows.map(function(r) { return '<tr class="border-t"><td class="py-2 font-medium">' + esc(r.name) + '</td><td class="text-center text-slate-500">' + esc(test.max) + '</td><td class="text-right font-bold">' + esc(r.v) + '</td></tr>'; }).join('') + '</table>' +
+            '<div class="grid grid-cols-3 gap-2 mt-4 text-center">' +
+            '<div class="bg-slate-50 rounded-lg p-2"><p class="text-[10px] text-slate-400">Total</p><p class="font-bold">' + (Math.round(total * 100) / 100) + ' / ' + max + '</p></div>' +
+            '<div class="bg-slate-50 rounded-lg p-2"><p class="text-[10px] text-slate-400">Percentage</p><p class="font-bold">' + perc.toFixed(1) + '%</p></div>' +
+            '<div class="bg-indigo-50 rounded-lg p-2"><p class="text-[10px] text-indigo-400">Grade</p><p class="font-bold text-indigo-700">' + gradeFor(perc) + '</p></div></div>');
+}
+
+// ---------- Notices ----------
+function renderMessages() {
+    $('tab-messages').innerHTML = heading('Notices & Messages', 'نوٹس اور پیغامات') +
+        (S.messages.length ? S.messages.map(function(m) {
+            const fromTeacher = m.type === 'teacher';
+            const isNewMsg = lsGet(seenKey(), []).indexOf(m.id) < 0;
+            return card('<div class="flex items-center justify-between gap-2 mb-1"><span class="text-[11px] font-bold px-2 py-0.5 rounded ' + (fromTeacher ? 'bg-emerald-100 text-emerald-700' : 'bg-indigo-100 text-indigo-700') + '">' + (fromTeacher ? 'Teacher' : 'School') + '</span>' + (isNewMsg ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-600 text-white">NEW</span>' : '') +
+                '<span class="text-[11px] text-slate-400">' + esc(m.date) + '</span></div>' +
+                '<p class="text-sm text-slate-800 whitespace-pre-line">' + esc(m.text) + '</p><p class="text-[11px] text-slate-400 mt-2">From ' + esc(m.from || 'Administrator') + '</p>');
+        }).join('') : card('<p class="text-sm text-slate-400 text-center">No notices.</p>'));
+}
+
+// ===================== START =====================
+window.onload = async function() {
+    $('login-id').addEventListener('keydown', function(e) { if (e.key === 'Enter') $('login-pin').focus(); });
+    $('login-pin').addEventListener('keydown', function(e) { if (e.key === 'Enter') handleLogin(); });
+    try { const st = await fbGetPublic('branding'); if (st && st.name) $('login-school-name').innerText = st.name; } catch (e) { /* offline */ }
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem('saira_student_login')); } catch (e) { saved = null; }
+    if (saved && saved.id && saved.rt) {
+        $('login-id').value = saved.id;
+        try { await authRefresh(saved.rt); await handleLogin('saved'); } catch (e) { localStorage.removeItem('saira_student_login'); }
+    }
+};
+</script>
+</body>
+</html>
 
