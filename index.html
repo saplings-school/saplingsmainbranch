@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saira School Management System - Multi-Branch Admin ERP</title>
+    <title>Saplings School Management System - Multi-Branch Admin ERP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
@@ -157,14 +157,14 @@
                 <div id="login-logo-box" class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3 overflow-hidden border-2 border-indigo-200">
                     <i class="fa-solid fa-graduation-cap text-3xl text-indigo-700"></i>
                 </div>
-                <h1 class="text-2xl font-bold text-indigo-900" id="login-school-name">Saira Public School</h1>
+                <h1 class="text-2xl font-bold text-indigo-900" id="login-school-name">Saplings Public School</h1>
                 <p class="text-sm text-slate-500 mt-1">Multi-Branch Admin ERP Login</p>
             </div>
 
             <form onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Login ID</label>
-                    <input type="text" id="admin-login-id" placeholder="Enter Login ID" autocomplete="username" autocapitalize="off" class="w-full px-3 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <input type="text" id="admin-login-id" placeholder="Enter Firebase Admin Email" autocomplete="username" autocapitalize="off" class="w-full px-3 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Password</label>
@@ -192,7 +192,7 @@
                         <i class="fa-solid fa-graduation-cap text-xl"></i>
                     </div>
                     <div>
-                        <h1 id="nav-school-name" class="text-lg font-bold tracking-wide leading-tight">Saira Public School</h1>
+                        <h1 id="nav-school-name" class="text-lg font-bold tracking-wide leading-tight">Saplings Public School</h1>
                         <p id="nav-branch-subtitle" class="text-xs text-indigo-200">Head Office (All Branches)</p>
                     </div>
                 </div>
@@ -1210,7 +1210,7 @@
                     <div class="flex items-center justify-center gap-2.5">
                         <img id="card-logo" src="" alt="Logo" class="w-10 h-10 rounded-full object-cover border-2 border-white bg-white hidden shrink-0">
                         <div class="text-left">
-                            <h3 id="card-school-name" class="font-bold text-sm leading-tight">Saira Public School</h3>
+                            <h3 id="card-school-name" class="font-bold text-sm leading-tight">Saplings Public School</h3>
                             <p id="card-branch-name" class="text-[10px] text-indigo-200 font-semibold leading-tight">Main Campus</p>
                             <p id="card-school-address" class="text-[9px] opacity-85 leading-tight">City Road, Karachi</p>
                         </div>
@@ -1447,7 +1447,7 @@
                         <i class="fa-solid fa-robot"></i>
                     </div>
                     <div>
-                        <h3 class="text-base sm:text-lg font-bold text-slate-800 leading-tight">SAIRA AI School Commander</h3>
+                        <h3 class="text-base sm:text-lg font-bold text-slate-800 leading-tight">SAPLINGS AI School Commander</h3>
                         <p class="text-[11px] text-slate-500">Ultra-Fast School ERP Intelligence • Live Firebase Sync</p>
                     </div>
                 </div>
@@ -1512,7 +1512,7 @@
             <!-- Chat / Response Area -->
             <div id="gemini-chat-box" class="shrink-0 overflow-y-auto bg-slate-50 border rounded-xl p-3.5 space-y-3 min-h-[240px] max-h-[360px] text-sm">
                 <div class="bg-white p-3 rounded-xl border shadow-sm text-slate-700 text-xs leading-relaxed">
-                    Assalam-o-Alaikum Yousuf Bhai! Main SAIRA AI School Commander hoon. Aap mujh se school ke live database (Students, Teachers, Hazri, Fee, Timetable, Results, Notices) ke baray mein kuch bhi pooch sakte hain!
+                    Assalam-o-Alaikum ADMIN! Main SAPLINGS AI School Commander hoon. Aap mujh se school ke live database (Students, Teachers, Hazri, Fee, Timetable, Results, Notices) ke baray mein kuch bhi pooch sakte hain!
                 </div>
             </div>
 
@@ -1534,35 +1534,35 @@
         const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='%2394a3b8'><rect width='24' height='24' fill='%23f1f5f9'/><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
 
         // ========== STATE ==========
-        let appSettings = JSON.parse(localStorage.getItem('saira_settings_v3')) || {
-            name: "Saira Public School",
+        let appSettings = JSON.parse(localStorage.getItem('saplings_settings_v3')) || {
+            name: "Saplings Public School",
             address: "Main Campus, Karachi",
             logo: "",
             adminPassword: "admin123",
             firebaseUrl: ""
         };
 
-        let branches = JSON.parse(localStorage.getItem('saira_branches_v3')) || [
+        let branches = JSON.parse(localStorage.getItem('saplings_branches_v3')) || [
             { id: "main", name: "Main Campus" },
             { id: "branch_2", name: "Branch 2 (Gulshan)" },
             { id: "branch_3", name: "Branch 3 (Clifton)" }
         ];
-        let activeBranch = localStorage.getItem('saira_active_branch') || 'ALL';
+        let activeBranch = localStorage.getItem('saplings_active_branch') || 'ALL';
 
-        let students = JSON.parse(localStorage.getItem('saira_students_v3')) || [];
-        let teachers = JSON.parse(localStorage.getItem('saira_teachers_v3')) || [];
-        let staffList = JSON.parse(localStorage.getItem('saira_staff_v3')) || [];
-        let attendance = JSON.parse(localStorage.getItem('saira_attendance_v3')) || [];
-        let exams = JSON.parse(localStorage.getItem('saira_exams_v3')) || {};
-        let expenses = JSON.parse(localStorage.getItem('saira_expenses_v3')) || [];
-        let ledger = JSON.parse(localStorage.getItem('saira_ledger_v1')) || [];
-        let academicHistory = JSON.parse(localStorage.getItem('saira_history_v1')) || [];
-        let bookTexts = JSON.parse(localStorage.getItem('saira_booktexts_v1')) || {};
-        let messages = JSON.parse(localStorage.getItem('saira_messages_v3')) || [];
-        let homeworks = JSON.parse(localStorage.getItem('saira_homework_v3')) || [];
-        let syllabus = JSON.parse(localStorage.getItem('saira_syllabus_v3')) || {};
-        let teacherTasks = JSON.parse(localStorage.getItem('saira_teacher_tasks_v3')) || [];
-        let teacherActivityLog = JSON.parse(localStorage.getItem('saira_activity_log_v3')) || [];
+        let students = JSON.parse(localStorage.getItem('saplings_students_v3')) || [];
+        let teachers = JSON.parse(localStorage.getItem('saplings_teachers_v3')) || [];
+        let staffList = JSON.parse(localStorage.getItem('saplings_staff_v3')) || [];
+        let attendance = JSON.parse(localStorage.getItem('saplings_attendance_v3')) || [];
+        let exams = JSON.parse(localStorage.getItem('saplings_exams_v3')) || {};
+        let expenses = JSON.parse(localStorage.getItem('saplings_expenses_v3')) || [];
+        let ledger = JSON.parse(localStorage.getItem('saplings_ledger_v1')) || [];
+        let academicHistory = JSON.parse(localStorage.getItem('saplings_history_v1')) || [];
+        let bookTexts = JSON.parse(localStorage.getItem('saplings_booktexts_v1')) || {};
+        let messages = JSON.parse(localStorage.getItem('saplings_messages_v3')) || [];
+        let homeworks = JSON.parse(localStorage.getItem('saplings_homework_v3')) || [];
+        let syllabus = JSON.parse(localStorage.getItem('saplings_syllabus_v3')) || {};
+        let teacherTasks = JSON.parse(localStorage.getItem('saplings_teacher_tasks_v3')) || [];
+        let teacherActivityLog = JSON.parse(localStorage.getItem('saplings_activity_log_v3')) || [];
 
         // ---- Firebase project settings (the app talks to the Realtime Database through its REST address) ----
         const FIREBASE_CONFIG = {
@@ -1596,7 +1596,7 @@
         const DEFAULT_SUBJECTS = ['English', 'Urdu', 'Maths', 'General Science', 'Islamiyat', 'Computer', 'Physics', 'Chemistry', 'Biology', 'Pak Studies', 'Nazra / Qaida', 'General Knowledge', 'Drawing', 'Social Studies', 'History / Geography', 'Computer Science'];
         let classSubjects = JSON.parse(JSON.stringify(DEFAULT_CLASS_SUBJECTS));
         try {
-            const savedCS = JSON.parse(localStorage.getItem('saira_class_subjects_v3'));
+            const savedCS = JSON.parse(localStorage.getItem('saplings_class_subjects_v3'));
             if (savedCS && typeof savedCS === 'object') {
                 CLASS_LIST.forEach(function(c) {
                     if (Array.isArray(savedCS[c]) && savedCS[c].length) classSubjects[c] = savedCS[c];
@@ -1622,8 +1622,8 @@
         let subjects = getAllUniqueSubjects();
 
         // ---- Year reset markers (so old devices do not bring back cleared data) ----
-        let resetAt = Number(localStorage.getItem('saira_reset_at') || 0);
-        let resetStudents = localStorage.getItem('saira_reset_students') === '1';
+        let resetAt = Number(localStorage.getItem('saplings_reset_at') || 0);
+        let resetStudents = localStorage.getItem('saplings_reset_students') === '1';
         let lastBackupAt = 0;
 
         function esc(v) {
@@ -1672,10 +1672,10 @@
         let timetables = {};   // timetables['branchId|Class 8'] = { periods, times[], days:{Mon:[{t:teacherId,s:subject},...]} }
         let periodTimes = [];  // same period times for the whole school, e.g. ['8:00-8:40', ...]
         try {
-            examTests = JSON.parse(localStorage.getItem('saira_tests_v3')) || [];
-            marks = JSON.parse(localStorage.getItem('saira_marks_v3')) || {};
-            timetables = JSON.parse(localStorage.getItem('saira_timetables_v3')) || {};
-            periodTimes = JSON.parse(localStorage.getItem('saira_periodtimes_v3')) || [];
+            examTests = JSON.parse(localStorage.getItem('saplings_tests_v3')) || [];
+            marks = JSON.parse(localStorage.getItem('saplings_marks_v3')) || {};
+            timetables = JSON.parse(localStorage.getItem('saplings_timetables_v3')) || {};
+            periodTimes = JSON.parse(localStorage.getItem('saplings_periodtimes_v3')) || [];
         } catch (err) { /* start empty */ }
 
         // Firebase does not allow . $ # [ ] / in keys, so subject names are made safe when used as keys
@@ -1718,11 +1718,11 @@
 
         function saveLocalOnly() {
             try {
-                localStorage.setItem('saira_students_v3', JSON.stringify(students));
-                localStorage.setItem('saira_teachers_v3', JSON.stringify(teachers));
-                localStorage.setItem('saira_tests_v3', JSON.stringify(examTests));
-                localStorage.setItem('saira_marks_v3', JSON.stringify(marks));
-                localStorage.setItem('saira_periodtimes_v3', JSON.stringify(periodTimes));
+                localStorage.setItem('saplings_students_v3', JSON.stringify(students));
+                localStorage.setItem('saplings_teachers_v3', JSON.stringify(teachers));
+                localStorage.setItem('saplings_tests_v3', JSON.stringify(examTests));
+                localStorage.setItem('saplings_marks_v3', JSON.stringify(marks));
+                localStorage.setItem('saplings_periodtimes_v3', JSON.stringify(periodTimes));
             } catch (err) { console.warn('Local save failed', err); }
         }
 
@@ -1747,22 +1747,27 @@
         normalizeTeachersAndSubjects();
         if (ensurePinsAndTests()) saveLocalOnly();
 
-        let currentUser = JSON.parse(sessionStorage.getItem('saira_current_user')) || null;
+        let currentUser = JSON.parse(sessionStorage.getItem('saplings_current_user')) || null;
         let uploadedPhotos = { student: "", teacher: "", staff: "" };
         let currentVoucherId = null;
         let html5QrCode = null;
 
-        // ========== INIT ==========
+        // ========== INIT (FIXED FOR DIRECT FIREBASE AUTH) ==========
         window.onload = async function() {
             applyBrandingToLogin();
-            await syncFromFirebaseCloud();
-            injectPrintBars();
-            checkCloudConnection();
-            pullInbox();
-            if (typeof setInterval === 'function') setInterval(pullInbox, 60000);
-            if (currentUser && currentUser.role === 'admin') {
+            const tk = await p9Token();
+            if (tk) {
+                await syncFromFirebaseCloud();
+                injectPrintBars();
+                checkCloudConnection();
+                pullInbox();
+                if (typeof setInterval === 'function') setInterval(pullInbox, 60000);
+                currentUser = { role: 'admin', name: 'Administrator', id: 'ADMIN' };
+                sessionStorage.setItem('saplings_current_user', JSON.stringify(currentUser));
                 showMainApp();
             } else {
+                sessionStorage.removeItem('saplings_current_user');
+                currentUser = null;
                 document.getElementById('login-screen').classList.remove('hidden');
             }
         };
@@ -1781,13 +1786,13 @@
         // The complete school data lives only in "admin/data" (admin-only). This page also publishes small separate views for
         // every student, teacher and class, and creates a Firebase login (ID + PIN) for each student and teacher.
         // Teachers can only write small records into their own inbox; every record is checked here before it is merged.
-        const P9_KEY = FIREBASE_CONFIG.apiKey, P9_RT = 'saira_fb_admin_rt', P9_HASH = 'saira_p9_hashes', P9_FAIL = 'saira_p9_failed';
+        const P9_KEY = FIREBASE_CONFIG.apiKey, P9_RT = 'saplings_fb_admin_rt', P9_HASH = 'saplings_p9_hashes', P9_FAIL = 'saplings_p9_failed';
         let adminAuth = null;
         const P9 = { busy: false, again: false, timer: null, status: '', errors: [], force: false };
         function p9Base() { return String(appSettings.firebaseUrl || '').replace(/\/$/, ''); }
         function p9LocalIso() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
         function p9Safe(x) { return String(x).replace(/[.$#\[\]\/\\]/g, '_'); }
-        function p9Email(role, id) { return String(id).trim().toLowerCase().replace(/[^a-z0-9._-]/g, '_') + '@' + role + '.saira.invalid'; }
+        function p9Email(role, id) { return String(id).trim().toLowerCase().replace(/[^a-z0-9._-]/g, '_') + '@' + role + '.saplings.invalid'; }
         function p9Pass(pin) { return 'PIN' + String(pin).trim(); }
         function p9Hash(str) { let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return (h >>> 0).toString(36) + ':' + str.length; }
         function p9Set(msg) { P9.status = msg; const el = document.getElementById('p9-status'); if (el) el.innerText = msg; }
@@ -1942,7 +1947,7 @@
                     p9Set('Creating logins ' + Math.min(i + 6, jobs.length) + ' / ' + jobs.length + '...');
                 }
                 appSettings.authMap = map;
-                try { localStorage.setItem(P9_FAIL, JSON.stringify(failed)); localStorage.setItem('saira_settings_v3', JSON.stringify(appSettings)); } catch (e) { /* storage full */ }
+                try { localStorage.setItem(P9_FAIL, JSON.stringify(failed)); localStorage.setItem('saplings_settings_v3', JSON.stringify(appSettings)); } catch (e) { /* storage full */ }
                 const saveMap = await p9Req('PUT', 'admin/data/settings/authMap', map);
                 if (saveMap && (saveMap.status === 401 || saveMap.status === 403)) { p9Set(p9DenyText()); return; }
                 p9Set('Publishing views...');
@@ -1977,12 +1982,12 @@
             await syncFromFirebaseCloud();
             await p9Publish(false); await p9ShowStatus();
         }
-        // One time only: copy the school data from the OLD open database ("saira_erp") while its old rules still allow reading.
+        // One time only: copy the school data from the OLD open database ("saplings_erp") while its old rules still allow reading.
         async function p9ImportOld() {
             if (!p9Base()) { alert('Enter the Firebase Database URL first.'); return; }
-            if (!confirm('Import the school data from the OLD database (saira_erp)?\n\nThis replaces the data on this device with the old cloud copy. Do it only on a new/empty address, and only while the old database is still open.')) return;
+            if (!confirm('Import the school data from the OLD database (saplings_erp)?\n\nThis replaces the data on this device with the old cloud copy. Do it only on a new/empty address, and only while the old database is still open.')) return;
             try {
-                const res = await fetch(p9Base() + '/saira_erp.json');
+                const res = await fetch(p9Base() + '/saplings_erp.json');
                 if (!res.ok) { p9Set('The old database is already closed (HTTP ' + res.status + '). Nothing was imported.'); return; }
                 const data = await res.json();
                 if (!data || !data.students) { p9Set('The old database has no school data. Nothing was imported.'); return; }
@@ -1998,28 +2003,28 @@
 
         async function syncToFirebaseCloud() {
             const localPairs = [
-                ['saira_settings_v3', appSettings],
-                ['saira_branches_v3', branches],
-                ['saira_students_v3', students],
-                ['saira_teachers_v3', teachers],
-                ['saira_staff_v3', staffList],
-                ['saira_attendance_v3', attendance],
-                ['saira_exams_v3', exams],
-                ['saira_expenses_v3', expenses],
-                ['saira_ledger_v1', ledger],
-                ['saira_history_v1', academicHistory],
-                ['saira_booktexts_v1', bookTexts],
-                ['saira_messages_v3', messages],
-                ['saira_homework_v3', homeworks],
-                ['saira_subjects_v3', subjects],
-                ['saira_class_subjects_v3', classSubjects],
-                ['saira_tests_v3', examTests],
-                ['saira_marks_v3', marks],
-                ['saira_timetables_v3', timetables],
-                ['saira_periodtimes_v3', periodTimes],
-                ['saira_syllabus_v3', syllabus],
-                ['saira_teacher_tasks_v3', teacherTasks],
-                ['saira_activity_log_v3', teacherActivityLog]
+                ['saplings_settings_v3', appSettings],
+                ['saplings_branches_v3', branches],
+                ['saplings_students_v3', students],
+                ['saplings_teachers_v3', teachers],
+                ['saplings_staff_v3', staffList],
+                ['saplings_attendance_v3', attendance],
+                ['saplings_exams_v3', exams],
+                ['saplings_expenses_v3', expenses],
+                ['saplings_ledger_v1', ledger],
+                ['saplings_history_v1', academicHistory],
+                ['saplings_booktexts_v1', bookTexts],
+                ['saplings_messages_v3', messages],
+                ['saplings_homework_v3', homeworks],
+                ['saplings_subjects_v3', subjects],
+                ['saplings_class_subjects_v3', classSubjects],
+                ['saplings_tests_v3', examTests],
+                ['saplings_marks_v3', marks],
+                ['saplings_timetables_v3', timetables],
+                ['saplings_periodtimes_v3', periodTimes],
+                ['saplings_syllabus_v3', syllabus],
+                ['saplings_teacher_tasks_v3', teacherTasks],
+                ['saplings_activity_log_v3', teacherActivityLog]
             ];
             let localSaveFailed = false;
             localPairs.forEach(function(pair) {
@@ -2049,7 +2054,7 @@
 
         // Puts a downloaded copy of the school data into this page (same rules as the normal cloud load).
         function p9ApplyData(data) {
-                        if (data.settings) { const ck = data.settings.geminiApiKey; if (ck && !localStorage.getItem('saira_gemini_api_key')) localStorage.setItem('saira_gemini_api_key', ck); appSettings = Object.assign({}, data.settings, { geminiApiKey: localStorage.getItem('saira_gemini_api_key') || '' }); }
+                        if (data.settings) { const ck = data.settings.geminiApiKey; if (ck && !localStorage.getItem('saplings_gemini_api_key')) localStorage.setItem('saplings_gemini_api_key', ck); appSettings = Object.assign({}, data.settings, { geminiApiKey: localStorage.getItem('saplings_gemini_api_key') || '' }); }
                         if (data.branches) branches = data.branches;
                         if (data.students) students = data.students;
                         if (data.teachers) teachers = data.teachers;
@@ -2082,8 +2087,8 @@
                             if (data.resetStudents) students = data.students || [];
                             resetAt = cloudReset;
                             resetStudents = !!data.resetStudents;
-                            localStorage.setItem('saira_reset_at', String(resetAt));
-                            localStorage.setItem('saira_reset_students', resetStudents ? '1' : '0');
+                            localStorage.setItem('saplings_reset_at', String(resetAt));
+                            localStorage.setItem('saplings_reset_students', resetStudents ? '1' : '0');
                         }
                         normalizeTeachersAndSubjects();
                         ensurePinsAndTests();
@@ -2108,7 +2113,7 @@
         }
 
         // ========== INBOX: records written by the Teacher portal ==========
-        // Teachers write small records into "saira_inbox". The admin page is the only writer of the main
+        // Teachers write small records into "saplings_inbox". The admin page is the only writer of the main
         // data, so it merges these records in (and then clears them). Nothing can overwrite anything.
         function setBadgeError() {
             const badge = document.getElementById('db-status-badge');
@@ -2238,7 +2243,7 @@
                 });
 
                 if (rejected.length) {
-                    try { const old = JSON.parse(localStorage.getItem('saira_inbox_rejected') || '[]'); localStorage.setItem('saira_inbox_rejected', JSON.stringify(rejected.concat(old).slice(0, 60))); } catch (e) { /* ignore */ }
+                    try { const old = JSON.parse(localStorage.getItem('saplings_inbox_rejected') || '[]'); localStorage.setItem('saplings_inbox_rejected', JSON.stringify(rejected.concat(old).slice(0, 60))); } catch (e) { /* ignore */ }
                     p5Audit('INBOX_REJECTED', rejected.length + ' record(s): ' + rejected[0]);
                     if (!window.__inboxRejectShown) { window.__inboxRejectShown = true; alert(rejected.length + ' teacher record(s) were rejected because they did not match the teacher\'s classes or subjects.\n\nFirst one: ' + rejected[0] + '\n\nThey were removed from the inbox and not merged.'); }
                 }
@@ -2264,41 +2269,61 @@
             }
         }
 
-        function handleLogin(e) {
+        async function handleLogin(e) {
             if (e) e.preventDefault();
             const errorEl = document.getElementById('login-error');
             errorEl.classList.add('hidden');
-            const idEl = document.getElementById('admin-login-id');
-            const idIn = idEl ? idEl.value.trim().toLowerCase() : '';
-            const pass = document.getElementById('admin-password').value.trim();
-            const savedId = String((appSettings && appSettings.adminLoginId) || '').trim().toLowerCase();
-            const savedPass = String((appSettings && appSettings.adminPassword) || '').trim();
-            let ok = false;
-            if (savedId) {
-                // Login ID is configured in Settings: both ID and password must match.
-                ok = (idIn === savedId && pass === savedPass);
-            } else {
-                // First-time mode (no Login ID set yet): empty fields or the stored password let the admin in to open Settings.
-                ok = (idIn === '' && (pass === '' || pass === savedPass));
-            }
-            if (ok) {
-                currentUser = { role: 'admin', name: 'Administrator', id: 'ADMIN' };
-                sessionStorage.setItem('saira_current_user', JSON.stringify(currentUser));
-                showMainApp();
-            } else {
-                errorEl.innerText = 'Incorrect Login ID or Password.';
+            
+            const emailEl = document.getElementById('admin-login-id');
+            const passEl = document.getElementById('admin-password');
+            const email = emailEl ? emailEl.value.trim() : '';
+            const pass = passEl ? passEl.value : '';
+
+            if (!email || !pass) {
+                errorEl.innerText = 'Please enter your Firebase Admin Email and Password.';
                 errorEl.classList.remove('hidden');
+                return;
+            }
+
+            const submitBtn = e && e.target ? e.target.querySelector('button[type="submit"]') : null;
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Connecting to Firebase...';
+            }
+
+            try {
+                await p9AdminSignIn(email, pass);
+                await syncFromFirebaseCloud();
+                injectPrintBars();
+                checkCloudConnection();
+                pullInbox();
+                if (typeof setInterval === 'function') setInterval(pullInbox, 60000);
+
+                currentUser = { role: 'admin', name: 'Administrator', id: 'ADMIN' };
+                sessionStorage.setItem('saplings_current_user', JSON.stringify(currentUser));
+                showMainApp();
+            } catch (err) {
+                errorEl.innerText = 'Incorrect Firebase Admin Email or Password.';
+                errorEl.classList.remove('hidden');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-2"></i>Login as Admin';
+                }
             }
         }
 
         function logout() {
-            sessionStorage.removeItem('saira_current_user');
+            sessionStorage.removeItem('saplings_current_user');
+            localStorage.removeItem(P9_RT);
+            adminAuth = null;
             currentUser = null;
             stopQrScanner();
             document.getElementById('main-app').classList.add('hidden');
             document.getElementById('login-screen').classList.remove('hidden');
             document.getElementById('admin-password').value = '';
-            const lid = document.getElementById('admin-login-id'); if (lid) lid.value = '';
+            const lid = document.getElementById('admin-login-id');
+            if (lid) lid.value = '';
         }
 
         function showMainApp() {
@@ -2353,7 +2378,7 @@
 
         function handleBranchChange(branchId) {
             activeBranch = branchId;
-            localStorage.setItem('saira_active_branch', activeBranch);
+            localStorage.setItem('saplings_active_branch', activeBranch);
             populateBranchDropdowns();
             updateDashboard();
             const currentTab = document.querySelector('.tab-btn.bg-indigo-50')?.getAttribute('data-target') || 'dashboard';
@@ -2729,7 +2754,7 @@
         }
 
         async function saveSettings() {
-            appSettings.name = document.getElementById('set-name').value.trim() || "Saira Public School";
+            appSettings.name = document.getElementById('set-name').value.trim() || "saplings Public School";
             appSettings.address = document.getElementById('set-address').value.trim() || "Main Campus, Karachi";
             appSettings.logo = document.getElementById('set-logo').value.trim();
             const _newId = document.getElementById('set-admin-id').value.trim();
@@ -2742,7 +2767,7 @@
             appSettings.settingsPin = _newPin;
             appSettings.firebaseUrl = document.getElementById('set-firebase-url').value.trim();
             if (document.getElementById('set-gemini-key')) {
-                appSettings.geminiApiKey = document.getElementById('set-gemini-key').value.trim(); if (appSettings.geminiApiKey) localStorage.setItem('saira_gemini_api_key', appSettings.geminiApiKey);
+                appSettings.geminiApiKey = document.getElementById('set-gemini-key').value.trim(); if (appSettings.geminiApiKey) localStorage.setItem('saplings_gemini_api_key', appSettings.geminiApiKey);
             }
             await syncToFirebaseCloud();
             applySettings();
@@ -4314,7 +4339,7 @@
             const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `Saira_School_ERP_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `saplings_School_ERP_Backup_${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             lastBackupAt = Date.now();
         }
@@ -4388,8 +4413,8 @@
             if (removeStudents) students = [];
             resetAt = Date.now();
             resetStudents = removeStudents;
-            localStorage.setItem('saira_reset_at', String(resetAt));
-            localStorage.setItem('saira_reset_students', resetStudents ? '1' : '0');
+            localStorage.setItem('saplings_reset_at', String(resetAt));
+            localStorage.setItem('saplings_reset_students', resetStudents ? '1' : '0');
             syncToFirebaseCloud();
             updateDashboard();
             alert('New year started. Firebase records are emptied' + (removeStudents ? ' (students removed too).' : ' (students kept).'));
@@ -4408,7 +4433,7 @@
         }
 
         function getActiveGeminiKey() {
-            return (appSettings.geminiApiKey || localStorage.getItem('saira_gemini_api_key') || '').trim();
+            return (appSettings.geminiApiKey || localStorage.getItem('saplings_gemini_api_key') || '').trim();
         }
 
         function cleanAiMarkdown(text) {
@@ -4450,7 +4475,7 @@
                 return;
             }
             appSettings.geminiApiKey = key;
-            localStorage.setItem('saira_gemini_api_key', key);
+            localStorage.setItem('saplings_gemini_api_key', key);
             if (document.getElementById('set-gemini-key')) {
                 document.getElementById('set-gemini-key').value = key;
             }
@@ -4473,7 +4498,7 @@
             const presentIds = new Set(todayAtt.map(function(a) { return a.id; }));
 
             if (/^(salam|assalam|aoa|hello|hi|hey|kya haal|kaise ho)\b/i.test(q) && q.split(/\s+/).length <= 5) {
-                return 'Wa-Alaikum-us-Salam Yousuf Bhai! Main Saira School System ka AI Agent hoon. Is waqt ' + getBranchName(activeBranch) + ' mein kul ' + brStudents.length + ' students aur ' + brTeachers.length + ' teachers darj hain. Aap hazri, fee defaulters, books/syllabus, teacher activity log, timetable ya notices ke baray mein foran pooch sakte hain!';
+                return 'Wa-Alaikum-us-Salam Admin! Main saplings School System ka AI Agent hoon. Is waqt ' + getBranchName(activeBranch) + ' mein kul ' + brStudents.length + ' students aur ' + brTeachers.length + ' teachers darj hain. Aap hazri, fee defaulters, books/syllabus, teacher activity log, timetable ya notices ke baray mein foran pooch sakte hain!';
             }
 
             // Instant Fast-Path for Teacher Chapter Completion & Tasks Query (Only when not asking AI to find books or build/adjust syllabus)
@@ -4692,13 +4717,13 @@
         // Small local audit trail of AI-assisted actions (device only, last 40 entries, nothing goes to Firebase).
         function p5Audit(action, detail) {
             try {
-                const k = 'saira_ai_audit_v1', arr = JSON.parse(localStorage.getItem(k) || '[]');
+                const k = 'saplings_ai_audit_v1', arr = JSON.parse(localStorage.getItem(k) || '[]');
                 arr.unshift({ at: new Date().toISOString(), action: String(action), detail: String(detail || '').slice(0, 160) });
                 localStorage.setItem(k, JSON.stringify(arr.slice(0, 40)));
             } catch (e) { /* audit must never break the app */ }
         }
 
-        const SAIRA_SYSTEM_INSTRUCTION = `You are SAIRA AI SCHOOL COMMANDER, the central AI assistant inside the Saira School Management System (Admin ERP Portal, Karachi, Pakistan). You help the school administrator with academic and administrative work using the school's own data.
+        const saplings_SYSTEM_INSTRUCTION = `You are saplings AI SCHOOL COMMANDER, the central AI assistant inside the saplings School Management System (Admin ERP Portal, Karachi, Pakistan). You help the school administrator with academic and administrative work using the school's own data.
 ROLE AND METHOD:
 1. Understand the request, use only the data given in the snapshot or in the request, and do exactly the task asked. Do not ask for information that is already given. If something essential is missing, ask ONE short question.
 2. Never invent statistics, student records, marks, dates, textbook titles, chapters or official curriculum requirements. If data is missing or cannot be verified, say so clearly. Label any academic suggestion you generate as: AI suggestion, verify against the official textbook/board before use.
@@ -4769,7 +4794,7 @@ FORMAT AND LANGUAGE:
                 ? ''
                 : `\n\nLIVE SCHOOL DATABASE SNAPSHOT (compact, scoped to this request):\n${JSON.stringify(buildSchoolDatabaseSnapshot(userPrompt))}`;
 
-            const fullText = `${expectJsonOnly ? 'You are a Pakistani school curriculum assistant. Output ONLY one valid JSON object, no text outside it, no markdown, no ACTION_JSON tags. Any message must be clean Pakistani Roman Urdu without asterisks. Work only on the single class and subject named.' : SAIRA_SYSTEM_INSTRUCTION}${contextBlock}\n\nADMIN REQUEST:\n${userPrompt}`;
+            const fullText = `${expectJsonOnly ? 'You are a Pakistani school curriculum assistant. Output ONLY one valid JSON object, no text outside it, no markdown, no ACTION_JSON tags. Any message must be clean Pakistani Roman Urdu without asterisks. Work only on the single class and subject named.' : saplings_SYSTEM_INSTRUCTION}${contextBlock}\n\nADMIN REQUEST:\n${userPrompt}`;
 
             const payload = {
                 contents: [{ parts: [{ text: fullText }] }]
@@ -4823,7 +4848,7 @@ FORMAT AND LANGUAGE:
         }
 
         const DEFAULT_AI_WELCOME_HTML = `<div class="bg-white p-3 rounded-xl border shadow-sm text-slate-700 text-xs leading-relaxed">
-                    Assalam-o-Alaikum Yousuf Bhai! Main SAIRA AI School Commander hoon. Aap mujh se school ke live database (Students, Teachers, Hazri, Fee, Books/Syllabus, Teacher Activity Log, Timetable, Results, Notices) ke baray mein bol kar (Mic) ya likh kar kuch bhi pooch sakte hain!
+                    Assalam-o-Alaikum Admin! Main saplings AI School Commander hoon. Aap mujh se school ke live database (Students, Teachers, Hazri, Fee, Books/Syllabus, Teacher Activity Log, Timetable, Results, Notices) ke baray mein bol kar (Mic) ya likh kar kuch bhi pooch sakte hain!
                 </div>`;
 
         function openGeminiAssistantModal() {
@@ -6002,7 +6027,7 @@ FORMAT AND LANGUAGE:
         const P3MN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
         const P3DB = (function() {
             let db = null, warned = false; const mem = {};
-            function open() { return new Promise(function(res) { try { const r = indexedDB.open('saira_p3', 1); r.onupgradeneeded = function() { r.result.createObjectStore('d'); }; r.onsuccess = function() { db = r.result; res(db); }; r.onerror = function() { res(null); }; } catch (e) { res(null); } }); }
+            function open() { return new Promise(function(res) { try { const r = indexedDB.open('saplings_p3', 1); r.onupgradeneeded = function() { r.result.createObjectStore('d'); }; r.onsuccess = function() { db = r.result; res(db); }; r.onerror = function() { res(null); }; } catch (e) { res(null); } }); }
             function warn() { if (!warned) { warned = true; alert('Browser local storage nahi chal rahi: draft sirf is session tak rahega, band karne par mit jayega.'); } }
             async function run(mode, fn) { if (!db) await open(); if (!db) return { fail: true }; return new Promise(function(res) { try { const st = db.transaction('d', mode).objectStore('d'); const rq = fn(st); rq.onsuccess = function() { res({ v: rq.result }); }; rq.onerror = function() { res({ fail: true }); }; } catch (e) { res({ fail: true }); } }); }
             return {
@@ -7320,4 +7345,3 @@ Write a concise, clear report in Pakistani Roman Urdu without any asterisks (**)
     </script>
 </body>
 </html>
-
