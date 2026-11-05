@@ -176,7 +176,7 @@
                 </button>
             </form>
 
-            <p id="login-error" class="text-sm text-rose-600 text-center font-medium hidden"></p>
+            <p id="login-error" class="text-sm text-rose-600 text-center font-medium whitespace-pre-line break-all hidden"></p>
             <p class="text-xs text-center text-slate-400 pt-2 border-t">Teachers → use <strong>teacher.html</strong> &nbsp;|&nbsp; Students → use <strong>student.html</strong></p>
         </div>
     </div>
@@ -1357,10 +1357,6 @@
                     <input type="text" id="set-logo" placeholder="Or paste Logo Image URL..." class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
                 </div>
                 <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-                    <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-lock mr-1 text-indigo-600"></i>Admin Login (ID &amp; Password)</label>
-                    <input type="text" id="set-admin-id" placeholder="Login ID (e.g. your email or any name)" autocomplete="off" autocapitalize="off" class="w-full px-3 py-2 border rounded-lg text-sm bg-white">
-                    <input type="text" id="set-admin-pass" placeholder="Password" autocomplete="off" class="w-full px-3 py-2 border rounded-lg text-sm bg-white">
-                    <p class="text-[11px] text-slate-500">Until a Login ID is saved here, the login screen opens with empty fields. After saving, both ID and password are required.</p>
                     <label class="block text-xs font-semibold text-slate-600 mt-1">Settings PIN (4-8 digits, default 1234)</label>
                     <input type="text" inputmode="numeric" maxlength="8" id="set-settings-pin" placeholder="1234" autocomplete="off" class="w-full px-3 py-2 border rounded-lg text-sm bg-white">
                 </div>
@@ -1404,13 +1400,10 @@
                     <p class="text-[11px] text-slate-500 mt-1">Paste your free Firebase Realtime Database URL here to sync Admin, Teacher, and Student portals across all devices automatically.</p>
                     <div class="mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg space-y-2">
                         <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-shield-halved text-indigo-600 mr-1"></i>Secure Cloud Login (Admin)</label>
-                        <input type="email" id="set-cloud-email" placeholder="Firebase admin email" autocomplete="off" class="w-full px-3 py-2 border rounded-lg text-xs bg-white">
-                        <input type="password" id="set-cloud-pass" placeholder="Firebase admin password" autocomplete="new-password" class="w-full px-3 py-2 border rounded-lg text-xs bg-white">
+                        <p class="text-[11px] text-slate-600">You are already signed in from the main login page. No second sign-in is needed here.</p>
                         <div class="flex flex-wrap gap-2">
-                            <button type="button" onclick="p9SignInClick()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Sign in</button>
                             <button type="button" onclick="p9PublishNow(false)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Create logins &amp; publish</button>
                             <button type="button" onclick="p9PublishNow(true)" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Re-publish everything</button>
-                            <button type="button" onclick="p9SignOutClick()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold">Sign out</button>
                             <button type="button" onclick="p9ImportOld()" class="bg-rose-100 hover:bg-rose-200 text-rose-800 px-3 py-1.5 rounded-lg text-xs font-semibold">Import from OLD database (once)</button>
                         </div>
                         <p id="p9-status" class="text-[11px] text-slate-700 whitespace-pre-line break-all"></p>
@@ -1469,6 +1462,7 @@
                 <button type="button" onclick="askGeminiQuick('Aaj kis kis teacher ne kaun sa chapter complete kiya hai aur kya tasks pending hain?')" class="text-[11px] bg-teal-50 hover:bg-teal-100 text-teal-800 font-semibold px-2.5 py-1 rounded-full border border-teal-200">📖 Syllabus & Teacher Log</button>
                 <button type="button" onclick="askGeminiQuick('Kal school band rehne ka official English notice bana kar sab ko bhej do.')" class="text-[11px] bg-purple-50 hover:bg-purple-100 text-purple-700 font-semibold px-2.5 py-1 rounded-full border border-purple-200">📢 Auto-Send Holiday Notice</button>
                 <button type="button" onclick="aiGenerateTimetable('all');closeModal('gemini-modal');switchTab('timetable');" class="text-[11px] bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold px-2.5 py-1 rounded-full border border-rose-200">🗓️ Auto-Make Prep to Class 10 Timetable</button>
+                <button type="button" onclick="aiToolsOpen()" class="text-[11px] bg-sky-50 hover:bg-sky-100 text-sky-800 font-semibold px-2.5 py-1 rounded-full border border-sky-200">🧠 Smart Tools (Weak Students, Expenses, Lesson Plan, Calendar)</button>
             </div>
 
             <div class="flex flex-wrap gap-1.5 p-2 rounded-xl bg-indigo-50 border border-indigo-200">
@@ -1529,6 +1523,76 @@
         </div>
     </div>
 
+    <!-- UNPAID LIST MODAL (v2) -->
+    <div id="fee-list-modal" onclick="if(event.target===this)closeModal('fee-list-modal')" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-3 no-print">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-4 space-y-2 max-h-[92vh] flex flex-col">
+            <div class="flex items-start justify-between gap-2">
+                <div><h3 class="font-bold text-slate-800 text-sm">💳 Unpaid Fee List</h3><p id="fee-list-sum" class="text-[11px] text-slate-500"></p></div>
+                <button type="button" onclick="closeModal('fee-list-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <input id="fee-list-q" oninput="feeListRender()" placeholder="Naam ya class se dhoondein..." class="w-full border rounded-lg px-2.5 py-2 text-sm">
+            <div id="fee-list-body" class="overflow-y-auto space-y-1.5 flex-1"></div>
+            <p class="text-[10px] text-slate-400">Har bachay ka Reminder alag dabayein. Kuch bhi khud nahi bheja jata.</p>
+        </div>
+    </div>
+
+    <!-- FEE WHATSAPP REMINDER MODAL (v2) -->
+    <div id="fee-wa-modal" onclick="if(event.target===this)closeModal('fee-wa-modal')" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-3 no-print">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-4 space-y-3 max-h-[92vh] overflow-y-auto">
+            <div class="flex items-start justify-between gap-2">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-sm"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i>Fee Reminder</h3>
+                    <p id="fee-wa-who" class="text-[11px] text-slate-500"></p>
+                </div>
+                <button type="button" onclick="closeModal('fee-wa-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="flex gap-1.5">
+                <button type="button" data-lang="en" onclick="feeWASetLang('en')" class="fee-wa-lang flex-1 text-xs font-semibold py-1.5 rounded-lg border">English</button>
+                <button type="button" data-lang="rur" onclick="feeWASetLang('rur')" class="fee-wa-lang flex-1 text-xs font-semibold py-1.5 rounded-lg border">Roman Urdu</button>
+                <button type="button" data-lang="ur" onclick="feeWASetLang('ur')" class="fee-wa-lang flex-1 text-xs font-semibold py-1.5 rounded-lg border">اردو</button>
+            </div>
+            <textarea id="fee-wa-text" rows="7" class="w-full border rounded-lg p-2.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+            <p id="fee-wa-status" class="text-[11px] text-slate-500 min-h-[16px]"></p>
+            <div class="flex gap-2">
+                <button type="button" id="fee-wa-ai-btn" onclick="feeWAImprove()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-2 rounded-lg"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Improve with Gemini</button>
+                <button type="button" onclick="feeWASend()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-lg"><i class="fa-brands fa-whatsapp mr-1"></i>Open WhatsApp</button>
+            </div>
+            <p class="text-[10px] text-slate-400">Message is not sent automatically. WhatsApp opens with this draft and you press Send.</p>
+        </div>
+    </div>
+
+    <!-- AI SMART TOOLS MODAL (v2) -->
+    <div id="ai-tools-modal" onclick="if(event.target===this)closeModal('ai-tools-modal')" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-3 no-print" style="z-index:60">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-4 space-y-3 max-h-[92vh] overflow-y-auto">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-slate-800 text-sm">🧠 AI Smart Tools</h3>
+                <button type="button" onclick="closeModal('ai-tools-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5">
+                <button type="button" data-t="weak" onclick="aiToolsPick('weak')" class="ai-tool-tab text-xs font-semibold py-1.5 rounded-lg border">Weak Students</button>
+                <button type="button" data-t="remarks" onclick="aiToolsPick('remarks')" class="ai-tool-tab text-xs font-semibold py-1.5 rounded-lg border">Report Remarks</button>
+                <button type="button" data-t="expense" onclick="aiToolsPick('expense')" class="ai-tool-tab text-xs font-semibold py-1.5 rounded-lg border">Expense Audit</button>
+                <button type="button" data-t="lesson" onclick="aiToolsPick('lesson')" class="ai-tool-tab text-xs font-semibold py-1.5 rounded-lg border">Weekly Lesson Plan</button>
+                <button type="button" data-t="calendar" onclick="aiToolsPick('calendar')" class="ai-tool-tab text-xs font-semibold py-1.5 rounded-lg border col-span-2">School Calendar Planner</button>
+                <button type="button" data-t="vault" onclick="aiToolsPick('vault')" class="ai-tool-tab text-xs font-semibold py-1.5 rounded-lg border col-span-2">🗄️ AI Memory Vault</button>
+            </div>
+            <select id="ai-tools-sel" class="w-full border rounded-lg px-2.5 py-2 text-sm hidden"></select>
+            <textarea id="ai-tools-note" rows="2" class="w-full border rounded-lg p-2.5 text-sm hidden" placeholder=""></textarea>
+            <button type="button" id="ai-tools-run" onclick="aiToolsRun()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 rounded-lg">Generate with Gemini</button>
+            <button type="button" id="ai-tools-pub" onclick="aiRemarksPublish()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-lg hidden">Publish remarks to students (Name: remark)</button>
+            <button type="button" id="ai-tools-save" onclick="aiVaultSave()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-lg hidden">Save note in Vault</button>
+            <div id="ai-vault-extra" class="hidden grid grid-cols-3 gap-1.5">
+                <button type="button" onclick="aiVaultView()" class="text-[11px] font-semibold py-1.5 rounded-lg border bg-slate-50">View notes</button>
+                <button type="button" onclick="aiVaultExport()" class="text-[11px] font-semibold py-1.5 rounded-lg border bg-slate-50">Export Backup</button>
+                <label class="text-[11px] font-semibold py-1.5 rounded-lg border bg-slate-50 text-center cursor-pointer">Import<input type="file" accept=".json" class="hidden" onchange="aiVaultImport(this)"></label>
+            </div>
+            <p id="ai-tools-status" class="text-[11px] text-slate-500 min-h-[16px]"></p>
+            <textarea id="ai-tools-out" rows="10" readonly class="w-full border rounded-lg p-2.5 text-sm bg-slate-50 hidden"></textarea>
+            <button type="button" id="ai-tools-copy" onclick="aiToolsCopy()" class="w-full bg-slate-700 hover:bg-slate-800 text-white text-xs font-bold py-2 rounded-lg hidden">Copy result</button>
+            <p class="text-[10px] text-slate-400">Results are suggestions only. Nothing is saved or sent automatically.</p>
+        </div>
+    </div>
+
     <!-- ==================== JAVASCRIPT ==================== -->
     <script>
         const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='%2394a3b8'><rect width='24' height='24' fill='%23f1f5f9'/><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
@@ -1538,7 +1602,6 @@
             name: "Saplings Public School",
             address: "Main Campus, Karachi",
             logo: "",
-            adminPassword: "admin123",
             firebaseUrl: ""
         };
 
@@ -1755,7 +1818,11 @@
         // ========== INIT (FIXED FOR DIRECT FIREBASE AUTH) ==========
         window.onload = async function() {
             applyBrandingToLogin();
-            const tk = await p9Token();
+            let tk = await p9Token();
+            if (tk && (await p9VerifyAdmin()) === 'denied') {
+                adminAuth = null; try { localStorage.removeItem(P9_RT); } catch (e) { /* ignore */ }
+                tk = null;
+            }
             if (tk) {
                 await syncFromFirebaseCloud();
                 injectPrintBars();
@@ -1792,7 +1859,7 @@
         function p9Base() { return String(appSettings.firebaseUrl || '').replace(/\/$/, ''); }
         function p9LocalIso() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
         function p9Safe(x) { return String(x).replace(/[.$#\[\]\/\\]/g, '_'); }
-        function p9Email(role, id) { return String(id).trim().toLowerCase().replace(/[^a-z0-9._-]/g, '_') + '@' + role + '.saplings.invalid'; }
+        function p9Email(role, id) { return String(id).trim().toLowerCase().replace(/[^a-z0-9._-]/g, '_') + '@' + role + '.saira.invalid'; }
         function p9Pass(pin) { return 'PIN' + String(pin).trim(); }
         function p9Hash(str) { let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return (h >>> 0).toString(36) + ':' + str.length; }
         function p9Set(msg) { P9.status = msg; const el = document.getElementById('p9-status'); if (el) el.innerText = msg; }
@@ -1814,6 +1881,17 @@
             const j = await res.json(); if (!res.ok) throw new Error('SESSION_EXPIRED');
             adminAuth = { idToken: j.id_token, refreshToken: j.refresh_token, expiresAt: Date.now() + Number(j.expires_in || 3600) * 1000, uid: j.user_id, email: localStorage.getItem(P9_RT + '_email') || '' };
             try { localStorage.setItem(P9_RT, j.refresh_token); } catch (e) { /* storage blocked */ }
+        }
+        // Admin check: a signed-in Firebase account is NOT automatically an admin (students/teachers have accounts too).
+        // Only an account whose UID is listed under "admins" in the database rules can read admin/data.
+        // returns 'ok' | 'denied' | 'unknown' (network problem)
+        async function p9VerifyAdmin() {
+            try {
+                const res = await p9Req('GET', 'admin/data', undefined, '&shallow=true');
+                if (!res) return 'denied';
+                if (res.status === 401 || res.status === 403) return 'denied';
+                return res.ok ? 'ok' : 'unknown';
+            } catch (e) { return 'unknown'; }
         }
         async function p9Token() {
             try {
@@ -1934,7 +2012,7 @@
         function p9SchedulePublish() { clearTimeout(P9.timer); P9.timer = setTimeout(function() { p9Publish().catch(function(e) { console.warn('Publish warning', e); }); }, 4000); }
         async function p9Publish(force) {
             if (P9.busy) { P9.again = true; return; }
-            if (!(await p9Token())) { p9Set('Not signed in to the secure cloud (open Settings and sign in).'); return; }
+            if (!(await p9Token())) { p9Set('Not signed in to the secure cloud (log out and log in again from the main page).'); return; }
             P9.busy = true; P9.errors = []; P9.force = !!force;
             try {
                 const map = Object.assign({}, appSettings.authMap || {}), failed = p9Ls(P9_FAIL, {}), jobs = [];
@@ -1969,7 +2047,7 @@
         async function p9ShowStatus() {
             const el = document.getElementById('p9-status'); if (!el) return;
             const tk = await p9Token();
-            el.innerText = tk ? 'Signed in as ' + (adminAuth.email || 'admin') + '.\nYour admin UID (add it once under "admins" in Firebase): ' + adminAuth.uid + (P9.status ? '\n' + P9.status : '') : 'Not signed in. Sign in with the Firebase admin email and password.';
+            el.innerText = tk ? 'Signed in as ' + (adminAuth.email || 'admin') + '.\nYour admin UID (add it once under "admins" in Firebase): ' + adminAuth.uid + (P9.status ? '\n' + P9.status : '') : 'Not signed in. Please log out and log in again from the main page.';
         }
         async function p9SignInClick() {
             const email = (document.getElementById('set-cloud-email').value || '').trim(), pass = document.getElementById('set-cloud-pass').value || '';
@@ -1985,9 +2063,9 @@
         // One time only: copy the school data from the OLD open database ("saplings_erp") while its old rules still allow reading.
         async function p9ImportOld() {
             if (!p9Base()) { alert('Enter the Firebase Database URL first.'); return; }
-            if (!confirm('Import the school data from the OLD database (saplings_erp)?\n\nThis replaces the data on this device with the old cloud copy. Do it only on a new/empty address, and only while the old database is still open.')) return;
+            if (!confirm('Import the school data from the OLD database (saira_erp)?\n\nThis replaces the data on this device with the old cloud copy. Do it only on a new/empty address, and only while the old database is still open.')) return;
             try {
-                const res = await fetch(p9Base() + '/saplings_erp.json');
+                const res = await fetch(p9Base() + '/saira_erp.json');
                 if (!res.ok) { p9Set('The old database is already closed (HTTP ' + res.status + '). Nothing was imported.'); return; }
                 const data = await res.json();
                 if (!data || !data.students) { p9Set('The old database has no school data. Nothing was imported.'); return; }
@@ -2038,23 +2116,36 @@
             if (localSaveFailed) warnStorageFull();
 
             if (!appSettings.firebaseUrl) return false;
+            try { localStorage.setItem('saplings_pending_sync', '1'); } catch (e) { /* ignore */ }
             try {
                 // The full copy goes to "admin/data", which only the signed-in admin can read or write.
                 const putRes = await p9Req('PUT', 'admin/data', {
                     settings: appSettings, branches, students, teachers, staffList, attendance, exams, expenses, ledger, academicHistory, bookTexts, messages, homeworks, subjects, classSubjects, examTests, marks, timetables, periodTimes, syllabus, teacherTasks, teacherActivityLog, resetAt, resetStudents
                 });
                 if (!putRes) { setBadgeCloudLogin(); return false; }
-                if (putRes.ok) p9SchedulePublish();
+                if (putRes.ok) { try { localStorage.removeItem('saplings_pending_sync'); } catch (e) { /* ignore */ } p9SchedulePublish(); }
                 return !!putRes.ok;
             } catch (e) {
-                console.warn("Cloud sync warning:", e);
+                console.warn("Cloud sync warning (saved on this device, will retry when online):", e);
                 return false;
             }
         }
+        // Offline queue: data is always saved on this device first. If the cloud copy could not be sent,
+        // a "pending" flag stays set and the sync is retried when the internet returns (and every 60 seconds).
+        let pendingSyncBusy = false;
+        async function retryPendingSync() {
+            if (pendingSyncBusy || !currentUser || currentUser.role !== 'admin') return;
+            let pending = false; try { pending = localStorage.getItem('saplings_pending_sync') === '1'; } catch (e) { /* ignore */ }
+            if (!pending || navigator.onLine === false) return;
+            pendingSyncBusy = true;
+            try { await syncToFirebaseCloud(); } finally { pendingSyncBusy = false; }
+        }
+        window.addEventListener('online', function() { retryPendingSync(); try { pullInbox(); } catch (e) { /* ignore */ } });
+        setInterval(retryPendingSync, 60000);
 
         // Puts a downloaded copy of the school data into this page (same rules as the normal cloud load).
         function p9ApplyData(data) {
-                        if (data.settings) { const ck = data.settings.geminiApiKey; if (ck && !localStorage.getItem('saplings_gemini_api_key')) localStorage.setItem('saplings_gemini_api_key', ck); appSettings = Object.assign({}, data.settings, { geminiApiKey: localStorage.getItem('saplings_gemini_api_key') || '' }); }
+                        if (data.settings) { const ck = data.settings.geminiApiKey; if (ck) localStorage.setItem('saplings_gemini_api_key', ck); appSettings = Object.assign({}, data.settings, { geminiApiKey: localStorage.getItem('saplings_gemini_api_key') || '' }); }
                         if (data.branches) branches = data.branches;
                         if (data.students) students = data.students;
                         if (data.teachers) teachers = data.teachers;
@@ -2293,6 +2384,14 @@
 
             try {
                 await p9AdminSignIn(email, pass);
+                const adminCheck = await p9VerifyAdmin();
+                if (adminCheck === 'denied') {
+                    const uid = adminAuth ? adminAuth.uid : '';
+                    adminAuth = null; try { localStorage.removeItem(P9_RT); localStorage.removeItem(P9_RT + '_email'); } catch (e2) { /* ignore */ }
+                    errorEl.innerText = 'This account is not an Admin. Access denied.' + (uid ? '\n(If this is your admin account, add this UID under "admins" in Firebase: ' + uid + ')' : '');
+                    errorEl.classList.remove('hidden');
+                    return;
+                }
                 await syncFromFirebaseCloud();
                 injectPrintBars();
                 checkCloudConnection();
@@ -2303,7 +2402,7 @@
                 sessionStorage.setItem('saplings_current_user', JSON.stringify(currentUser));
                 showMainApp();
             } catch (err) {
-                errorEl.innerText = 'Incorrect Firebase Admin Email or Password.';
+                errorEl.innerText = /network|fetch/i.test(String(err && err.message)) ? 'No internet connection. Please connect and try again.' : 'Incorrect Firebase Admin Email or Password.';
                 errorEl.classList.remove('hidden');
             } finally {
                 if (submitBtn) {
@@ -2727,9 +2826,6 @@
             document.getElementById('set-name').value = appSettings.name;
             document.getElementById('set-address').value = appSettings.address;
             document.getElementById('set-logo').value = appSettings.logo || '';
-            const _hasId = !!String(appSettings.adminLoginId || '').trim();
-            document.getElementById('set-admin-id').value = appSettings.adminLoginId || '';
-            document.getElementById('set-admin-pass').value = (_hasId || (appSettings.adminPassword && appSettings.adminPassword !== 'admin123')) ? (appSettings.adminPassword || '') : '';
             document.getElementById('set-settings-pin').value = appSettings.settingsPin || '';
             const _skb = document.getElementById('share-key-teachers'); if (_skb) _skb.checked = !!appSettings.shareGeminiKey;
             document.getElementById('set-firebase-url').value = appSettings.firebaseUrl || '';
@@ -2754,16 +2850,12 @@
         }
 
         async function saveSettings() {
-            appSettings.name = document.getElementById('set-name').value.trim() || "saplings Public School";
+            appSettings.name = document.getElementById('set-name').value.trim() || "Saplings Public School";
             appSettings.address = document.getElementById('set-address').value.trim() || "Main Campus, Karachi";
             appSettings.logo = document.getElementById('set-logo').value.trim();
-            const _newId = document.getElementById('set-admin-id').value.trim();
-            const _newPass = document.getElementById('set-admin-pass').value.trim();
-            if (_newId && !_newPass) { alert('Please enter a password along with the Login ID.'); return; }
             const _newPin = document.getElementById('set-settings-pin').value.trim();
             if (_newPin && !/^\d{4,8}$/.test(_newPin)) { alert('Settings PIN must be 4 to 8 digits.'); return; }
-            appSettings.adminLoginId = _newId;
-            appSettings.adminPassword = _newPass || 'admin123';
+            delete appSettings.adminLoginId; delete appSettings.adminPassword; // old local login removed; Firebase login is used now
             appSettings.settingsPin = _newPin;
             appSettings.firebaseUrl = document.getElementById('set-firebase-url').value.trim();
             if (document.getElementById('set-gemini-key')) {
@@ -3518,6 +3610,7 @@
                         <td class="p-3">${badge}</td>
                         <td class="p-3 text-center">
                             <button onclick="showVoucher('${s.id}')" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold px-3 py-1 rounded">Voucher / Pay</button>
+                            ${s.feeStatus === 'Unpaid' ? `<button onclick="feeWAOpen('${s.id}')" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold px-3 py-1 rounded ml-1"><i class="fa-brands fa-whatsapp mr-1"></i>Reminder</button>` : ''}
                         </td>
                     </tr>`;
             });
@@ -4339,7 +4432,7 @@
             const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `saplings_School_ERP_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `Saplings_School_ERP_Backup_${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             lastBackupAt = Date.now();
         }
@@ -4788,7 +4881,7 @@ FORMAT AND LANGUAGE:
         async function callGeminiAPIRaw(userPrompt, expectJsonOnly, skipSnapshot) {
             const apiKey = getActiveGeminiKey();
             if (!apiKey) {
-                throw new Error('API Key set nahi hai. Settings kholein (Settings button 5 dafa tap karein, phir PIN) aur wahan Gemini API Key paste kar ke Save All Settings dabayein.');
+                throw new Error('Gemini API Key is device par abhi mojood nahi. Agar key pehle save ki thi to dobara login karein; warna Settings mein key paste kar ke Save All Settings dabayein (sirf Admin ke liye).');
             }
             const contextBlock = skipSnapshot
                 ? ''
@@ -7342,6 +7435,220 @@ Write a concise, clear report in Pakistani Roman Urdu without any asterisks (**)
                 alert('Session logs cleaned! Storage is now fresh.');
             }
         }
+
+        // ================= v2: Fee WhatsApp reminder (additive; nothing is sent automatically) =================
+        let feeWAStudentId = null, feeWALang = 'rur';
+        function feeWATemplate(st, lang) {
+            const fa = st.fatherName || st.father || '', school = appSettings.name || 'School Administration';
+            const amt = Number(st.fee) || 0, nm = st.name, cl = st.className;
+            if (lang === 'en') return 'Dear ' + (fa ? 'Mr/Mrs ' + fa : 'Parent') + ', this is a gentle reminder that the fee of ' + nm + ' (' + cl + ') amounting to Rs ' + amt + ' is pending. Kindly clear it at the earliest. Thank you. — ' + school;
+            if (lang === 'ur') return 'السلام علیکم! محترم ' + (fa ? fa + ' صاحب/صاحبہ' : 'والد/والدہ') + '، یہ نرم یاد دہانی ہے کہ ' + nm + ' (' + cl + ') کی Rs ' + amt + ' فیس ابھی تک باقی ہے۔ براہِ مہربانی جلد ادا کر دیں۔ شکریہ۔ — ' + school;
+            return 'Assalam-o-Alaikum ' + (fa ? fa + ' sahib/sahiba' : 'Muhtaram Walid/Walida') + ', yeh ek narm yaad-dahani hai ke ' + nm + ' (' + cl + ') ki Rs ' + amt + ' fee abhi tak baqi hai. Meherbani farma kar jald ada kar dein. Shukriya. — ' + school;
+        }
+        function feeWASetLang(lang) {
+            feeWALang = lang;
+            document.querySelectorAll('.fee-wa-lang').forEach(function(b) {
+                const on = b.getAttribute('data-lang') === lang;
+                b.classList.toggle('bg-emerald-600', on); b.classList.toggle('text-white', on);
+                b.classList.toggle('border-emerald-600', on); b.classList.toggle('text-slate-600', !on);
+            });
+            const st = students.find(function(x) { return x.id === feeWAStudentId; }); if (!st) return;
+            document.getElementById('fee-wa-text').value = feeWATemplate(st, lang);
+            document.getElementById('fee-wa-status').innerText = '';
+        }
+        function feeWAOpen(id) {
+            const st = students.find(function(x) { return x.id === id; }); if (!st) return;
+            if (st.feeStatus !== 'Unpaid') { alert('Is bachay ki fee Unpaid nahi hai.'); return; }
+            feeWAStudentId = id;
+            document.getElementById('fee-wa-who').innerText = st.name + ' • ' + st.className + ' • Rs ' + (Number(st.fee) || 0);
+            feeWASetLang(feeWALang);
+            const m = document.getElementById('fee-wa-modal'); m.classList.remove('hidden'); m.classList.add('flex');
+        }
+        async function feeWAImprove() {
+            const box = document.getElementById('fee-wa-text'), status = document.getElementById('fee-wa-status'), btn = document.getElementById('fee-wa-ai-btn');
+            const draft = box.value.trim(); if (!draft) { alert('Pehle message likhein.'); return; }
+            const langName = feeWALang === 'en' ? 'English' : feeWALang === 'ur' ? 'Urdu (Urdu script)' : 'Roman Urdu (Urdu written in English letters)';
+            const prompt = 'Rewrite this school fee reminder WhatsApp message for a parent in ' + langName + '. Keep it polite, respectful and short (maximum 60 words). Keep the child name, class, amount and school name exactly as given. Do not add new facts, dates, bank details, late charges or threats. Output only the final message text.\n\nMESSAGE:\n' + draft;
+            btn.disabled = true; status.innerText = 'Gemini message behtar bana raha hai...';
+            try {
+                const reply = (await callGeminiAPI(prompt, false, true) || '').trim();
+                if (!reply) throw new Error('Gemini ne khali jawab diya. Dobara try karein.');
+                box.value = reply; status.innerText = 'Message behtar ho gaya. Bhejne se pehle ek bar parh lein.';
+            } catch (e) { status.innerText = 'Error: ' + (e && e.message ? e.message : e); }
+            finally { btn.disabled = false; }
+        }
+        function feeWASend() {
+            const st = students.find(function(x) { return x.id === feeWAStudentId; }); if (!st) return;
+            p7OpenWA(st.phone, document.getElementById('fee-wa-text').value);
+        }
+
+        // ================= v2: AI Smart Tools (read-only; nothing is saved or sent) =================
+        let aiToolsCur = 'weak';
+        function aiToolsClasses() { const set = {}; students.forEach(function(x) { if (matchesBranch(x.branchId) && x.className) set[x.className] = 1; }); return Object.keys(set).sort(); }
+        function aiToolsPick(t) {
+            aiToolsCur = t;
+            document.querySelectorAll('.ai-tool-tab').forEach(function(b) { const on = b.getAttribute('data-t') === t; b.classList.toggle('bg-indigo-600', on); b.classList.toggle('text-white', on); b.classList.toggle('text-slate-600', !on); });
+            const sel = document.getElementById('ai-tools-sel'), note = document.getElementById('ai-tools-note');
+            sel.classList.add('hidden'); note.classList.add('hidden'); sel.innerHTML = '';
+            document.getElementById('ai-tools-save').classList.toggle('hidden', t !== 'vault');
+            document.getElementById('ai-vault-extra').classList.toggle('hidden', t !== 'vault');
+            document.getElementById('ai-tools-pub').classList.toggle('hidden', t !== 'remarks');
+            document.getElementById('ai-tools-out').readOnly = (t !== 'remarks');
+            if (t === 'vault') { note.placeholder = 'Naya faisla/meeting note likhein aur Save dabayein, YA sawal likhein (maslan: "winter holidays kab thin?") aur Generate dabayein'; note.classList.remove('hidden'); }
+            if (t === 'weak' || t === 'remarks') { aiToolsClasses().forEach(function(c) { sel.innerHTML += '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }); sel.classList.remove('hidden'); }
+            if (t === 'lesson') { Object.keys(syllabus || {}).forEach(function(k) { sel.innerHTML += '<option value="' + esc(k) + '">' + esc(syllabus[k].bookName || k) + '</option>'; }); sel.classList.remove('hidden'); note.placeholder = 'Optional: kitne din / koi khaas hidayat'; note.classList.remove('hidden'); }
+            if (t === 'calendar') { note.placeholder = 'Mahina/session, chhuttiyan, Sports Week, Exams ki tareekhein likhein...'; note.classList.remove('hidden'); }
+            document.getElementById('ai-tools-out').classList.add('hidden'); document.getElementById('ai-tools-copy').classList.add('hidden'); document.getElementById('ai-tools-status').innerText = '';
+        }
+        function aiToolsOpen() { aiToolsPick(aiToolsCur); const m = document.getElementById('ai-tools-modal'); m.classList.remove('hidden'); m.classList.add('flex'); }
+        function aiToolsBuild() {
+            const t = aiToolsCur, v = document.getElementById('ai-tools-sel').value, note = document.getElementById('ai-tools-note').value.trim(), school = appSettings.name || 'the school';
+            const rule = ' Write in clear Pakistani Roman Urdu (Urdu in English letters), short and practical, no asterisks, no markdown.';
+            if (t === 'weak' || t === 'remarks') {
+                const rows = p4Rows().filter(function(r) { return r.cls === v; }); if (!rows.length) return { err: 'Is class ke marks abhi mojood nahi hain.' };
+                const per = {}; rows.forEach(function(r) { const o = per[r.sid] = per[r.sid] || { n: r.sn, s: {} }; (o.s[r.sub] = o.s[r.sub] || []).push(r.pct); });
+                const data = Object.keys(per).slice(0, 45).map(function(id) { const o = per[id], subs = {}; Object.keys(o.s).forEach(function(k) { subs[k] = Math.round(o.s[k].reduce(function(a, b) { return a + b; }, 0) / o.s[k].length); }); return { name: o.n, avgPctBySubject: subs }; });
+                const head = t === 'weak' ? 'Analyse these class results for ' + v + ' of ' + school + '. List weak students (below 50 percent) with their weak subjects, then suggest the extra practice or worksheet type each needs.' : 'Write a personalised, kind and constructive report card remark (2 sentences) for each student of ' + v + ' of ' + school + ', based only on the marks given. Format: Name: remark.';
+                return { prompt: head + rule + '\n\nDATA: ' + JSON.stringify(data) };
+            }
+            if (t === 'expense') {
+                const ex = expenses.filter(function(e) { return matchesBranch(e.branchId); }); if (!ex.length) return { err: 'Abhi koi kharcha record nahi hai.' };
+                const cat = {}, ym = {}; ex.forEach(function(e) { const a = Number(e.amount) || 0; cat[e.category || 'Other'] = (cat[e.category || 'Other'] || 0) + a; ym[e.ym || '?'] = (ym[e.ym || '?'] || 0) + a; });
+                return { prompt: 'Audit the expenses of ' + school + '. Say which category costs most, any unusual month, and give 4 practical ways to reduce cost.' + rule + '\n\nBY CATEGORY (Rs): ' + JSON.stringify(cat) + '\nBY MONTH (Rs): ' + JSON.stringify(ym) + '\nRECENT: ' + JSON.stringify(ex.slice(0, 25).map(function(e) { return [e.title, e.category, e.amount]; })) };
+            }
+            if (t === 'lesson') {
+                const e = syllabus[v]; if (!e) return { err: 'Kitab chunein.' };
+                const ch = (e.chapters || []).map(function(c) { return { ch: c.name || c.title || c.chapter || '', status: c.status || 'Pending' }; });
+                return { prompt: 'Make a weekly lesson plan (Monday to Saturday) for the book "' + (e.bookName || v) + '" at ' + school + '. Continue from the pending chapters only; mention which chapter or topic to teach each day plus one short activity or homework.' + (note ? ' Extra instruction: ' + note + '.' : '') + rule + '\n\nCHAPTERS: ' + JSON.stringify(ch.slice(0, 60)) };
+            }
+            if (t === 'vault') {
+                const n = aiVaultLoad(); if (!n.length) return { err: 'Vault khali hai. Pehle note save karein.' }; if (!note) return { err: 'Sawal likhein.' };
+                return { prompt: 'Answer the question ONLY from these saved school notes. If the answer is not in them, say so clearly.' + rule + '\n\nNOTES: ' + JSON.stringify(n.slice(-150)) + '\nQUESTION: ' + note };
+            }
+            if (!note) return { err: 'Calendar ke liye mahina/session aur khaas tareekhein likhein.' };
+            return { prompt: 'Design a balanced school calendar for ' + school + ' from this request. List dates with events, keep exams, holidays and activities well spaced, and mark anything you assumed.' + rule + '\n\nREQUEST: ' + note };
+        }
+        async function aiToolsRun() {
+            const st = document.getElementById('ai-tools-status'), out = document.getElementById('ai-tools-out'), btn = document.getElementById('ai-tools-run'), cp = document.getElementById('ai-tools-copy');
+            if (aiToolsCur === 'vault') await aiVaultPull();
+            const b = aiToolsBuild(); if (b.err) { st.innerText = b.err; return; }
+            btn.disabled = true; st.innerText = 'Gemini kaam kar raha hai...';
+            try { const r = (await callGeminiAPI(b.prompt, false, true) || '').trim(); if (!r) throw new Error('Gemini ne khali jawab diya. Dobara try karein.'); out.value = r; out.classList.remove('hidden'); cp.classList.remove('hidden'); st.innerText = 'Tayyar. Istemal se pehle ek bar parh lein.'; }
+            catch (e) { st.innerText = 'Error: ' + (e && e.message ? e.message : e); }
+            finally { btn.disabled = false; }
+        }
+        // Memory Vault: local copy (new key saplings_v2_vault) + separate cloud node admin/vault (never touches admin/data).
+        // Merging is by note id and never deletes, so notes from any device are kept.
+        function aiVaultMerge(a, b) { const m = {}; (a || []).concat(b || []).forEach(function(n) { if (n && n.t) { if (!n.id) n.id = 'N-' + (n.d || '') + '-' + n.t.length + '-' + n.t.slice(0, 12); m[n.id] = n; } }); return Object.keys(m).map(function(k) { return m[k]; }); }
+        function aiVaultLoad() { try { return aiVaultMerge(JSON.parse(localStorage.getItem('saplings_v2_vault') || '[]'), []); } catch (e) { return []; } }
+        function aiVaultStore(list) { try { localStorage.setItem('saplings_v2_vault', JSON.stringify(list)); return true; } catch (e) { return false; } }
+        async function aiVaultPull() {
+            const st = document.getElementById('ai-tools-status');
+            try { const r = await p9Req('GET', 'admin/vault'); if (!r) { st.innerText = 'Cloud login nahi hai: nots sirf is device se use ho rahe hain.'; return aiVaultLoad(); }
+                if (!r.ok) { st.innerText = 'Cloud ne access nahi diya: nots sirf is device se use ho rahe hain.'; return aiVaultLoad(); }
+                const j = await r.json(), merged = aiVaultMerge(aiVaultLoad(), (j && j.notes) || []); aiVaultStore(merged); return merged;
+            } catch (e) { st.innerText = 'Cloud se rabta nahi hua: nots sirf is device se use ho rahe hain.'; return aiVaultLoad(); }
+        }
+        async function aiVaultPush(list) { try { const r = await p9Req('PUT', 'admin/vault', { notes: list, updated: Date.now() }); return !!(r && r.ok); } catch (e) { return false; } }
+        async function aiVaultSave() {
+            const box = document.getElementById('ai-tools-note'), st = document.getElementById('ai-tools-status'), t = box.value.trim(); if (!t) { st.innerText = 'Note khali hai.'; return; }
+            const note = { id: 'N-' + Date.now(), d: new Date().toLocaleDateString(), t: t };
+            if (!aiVaultStore(aiVaultMerge(aiVaultLoad(), [note]))) { st.innerText = 'Browser mein save nahi ho saka.'; return; }
+            box.value = ''; st.innerText = 'Note device mein save ho gaya. Cloud mein bhej raha hoon...';
+            const merged = await aiVaultPull(), ok = await aiVaultPush(merged);
+            st.innerText = ok ? 'Note save ho gaya (' + merged.length + ' notes) — device aur cloud dono mein.' : 'Note sirf is device mein save hua (cloud mein nahi gaya). Export Backup zaroor lein.';
+        }
+        async function aiVaultView() {
+            const list = await aiVaultPull(), out = document.getElementById('ai-tools-out'); document.getElementById('ai-tools-copy').classList.remove('hidden'); out.classList.remove('hidden');
+            out.value = list.length ? list.map(function(n, i) { return (i + 1) + '. [' + n.d + '] ' + n.t; }).join('\n\n') : 'Vault khali hai.';
+        }
+        function aiVaultExport() {
+            const blob = new Blob([JSON.stringify({ vault: aiVaultLoad(), exported: new Date().toISOString() }, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Memory_Vault_Backup_' + new Date().toISOString().slice(0, 10) + '.json'; a.click(); setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
+        }
+        function aiVaultImport(inp) {
+            const f = inp.files && inp.files[0]; if (!f) return; const st = document.getElementById('ai-tools-status'), rd = new FileReader();
+            rd.onload = async function() {
+                try { const j = JSON.parse(rd.result), inc = Array.isArray(j) ? j : (j.vault || []); if (!Array.isArray(inc)) throw new Error('Galat file');
+                    const merged = aiVaultMerge(aiVaultLoad(), inc); aiVaultStore(merged); const ok = await aiVaultPush(merged);
+                    st.innerText = 'Import ho gaya (' + merged.length + ' notes)' + (ok ? ' aur cloud mein bhi.' : ', cloud mein nahi gaya.');
+                } catch (e) { st.innerText = 'Import nahi ho saka: ' + e.message; }
+                inp.value = '';
+            };
+            rd.readAsText(f);
+        }
+        function aiToolsCopy() { const o = document.getElementById('ai-tools-out'); o.select(); try { navigator.clipboard.writeText(o.value); } catch (e) { document.execCommand('copy'); } document.getElementById('ai-tools-status').innerText = 'Copy ho gaya.'; }
+
+        // ================= v2: Unpaid list + AI agent dropdown menu (old buttons are only hidden, never removed) =================
+        function feeListOpen() { document.getElementById('fee-list-q').value = ''; feeListRender(); const m = document.getElementById('fee-list-modal'); m.classList.remove('hidden'); m.classList.add('flex'); }
+        function feeListRender() {
+            const q = document.getElementById('fee-list-q').value.trim().toLowerCase(), body = document.getElementById('fee-list-body');
+            const all = students.filter(function(x) { return matchesBranch(x.branchId) && x.feeStatus === 'Unpaid'; });
+            const total = all.reduce(function(a, x) { return a + (Number(x.fee) || 0); }, 0);
+            document.getElementById('fee-list-sum').innerText = all.length + ' bachay • Rs ' + total + ' baqi';
+            const rows = all.filter(function(x) { return !q || (String(x.name) + ' ' + String(x.className)).toLowerCase().indexOf(q) >= 0; });
+            body.innerHTML = rows.length ? rows.map(function(x) { return '<div class="flex items-center justify-between gap-2 border rounded-lg px-2.5 py-2"><div class="min-w-0"><div class="text-sm font-semibold text-slate-800 truncate">' + esc(x.name) + '</div><div class="text-[11px] text-slate-500">' + esc(x.className) + ' • Rs ' + (Number(x.fee) || 0) + (x.phone ? '' : ' • <span class="text-rose-500">phone nahi</span>') + '</div></div><button type="button" onclick="feeListPick(\'' + esc(x.id) + '\')" class="shrink-0 text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold px-3 py-1.5 rounded"><i class="fa-brands fa-whatsapp mr-1"></i>Reminder</button></div>'; }).join('') : '<p class="text-sm text-slate-500 text-center py-6">Koi Unpaid bacha nahi mila.</p>';
+        }
+        function feeListPick(id) { feeWAOpen(id); }
+        function aiToolsGo(t) { aiToolsOpen(); aiToolsPick(t); }
+        function aiMenuInit() {
+            try {
+                const chat = document.getElementById('gemini-chat-box'); if (!chat || document.getElementById('ai-menu-bar')) return;
+                const boxes = []; let el = chat.previousElementSibling;
+                while (el && el.tagName === 'DIV' && el.classList.contains('flex-wrap')) { boxes.push(el); el = el.previousElementSibling; }
+                const btns = []; boxes.slice().reverse().forEach(function(b) { b.querySelectorAll('button').forEach(function(x) { btns.push(x); }); });
+                if (!btns.length) return;
+                const G = [{ t: '📚 Syllabus & Kitab', it: [] }, { t: '🗓️ Timetable & Notice', it: [] }, { t: '🔎 Poochein & Report', it: [] }];
+                btns.forEach(function(b) {
+                    const on = b.getAttribute('onclick') || ''; if (on.indexOf('aiToolsOpen') >= 0) return;
+                    const k = /aiGenerateTimetable|p6TTCheck|p7CalForm|p1OpenNotice|p2Parent|p2Teacher|notice/.test(on) ? 1 : /p3GoSyllabus|p4Progress|p4Plan|p6Form|p1Tasks|p2Homework|p8Training|p8ProgForm|p7Workload|chapter/.test(on) ? 0 : 2;
+                    G[k].it.push({ l: b.textContent.replace(/\s+/g, ' ').trim(), f: function() { b.click(); } });
+                });
+                G[0].it.push({ l: '🧠 Weekly Lesson Plan (AI)', f: function() { aiToolsGo('lesson'); } });
+                G[1].it.push({ l: '📆 Calendar Planner (AI)', f: function() { aiToolsGo('calendar'); } });
+                G[2].it.push({ l: '💳 Unpaid List + WhatsApp Reminder', f: feeListOpen }, { l: '🔻 Weak Students (AI)', f: function() { aiToolsGo('weak'); } }, { l: '📝 Report Remarks (AI)', f: function() { aiToolsGo('remarks'); } }, { l: '💸 Expense Audit (AI)', f: function() { aiToolsGo('expense'); } }, { l: '🗄️ Memory Vault (notes)', f: function() { aiToolsGo('vault'); } });
+                const bar = document.createElement('div'); bar.id = 'ai-menu-bar'; bar.className = 'relative';
+                const row = document.createElement('div'); row.className = 'grid grid-cols-3 gap-1.5';
+                const panel = document.createElement('div'); panel.className = 'hidden absolute left-0 right-0 top-full mt-1 z-10 bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-y-auto';
+                let open = -1;
+                function closeP() { panel.classList.add('hidden'); open = -1; row.querySelectorAll('button').forEach(function(x) { x.classList.remove('ring-2', 'ring-indigo-400'); }); }
+                G.forEach(function(g, i) {
+                    const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'text-[11px] font-bold bg-indigo-600 text-white rounded-lg px-1.5 py-2 leading-tight'; bt.textContent = g.t + ' ▾';
+                    bt.onclick = function(ev) {
+                        ev.stopPropagation(); if (open === i) { closeP(); return; } closeP(); open = i; bt.classList.add('ring-2', 'ring-indigo-400'); panel.innerHTML = '';
+                        g.it.forEach(function(x) { const r = document.createElement('button'); r.type = 'button'; r.className = 'w-full text-left text-xs px-3 py-2.5 border-b border-slate-100 hover:bg-indigo-50'; r.textContent = x.l; r.onclick = function(e2) { e2.stopPropagation(); closeP(); x.f(); }; panel.appendChild(r); });
+                        panel.classList.remove('hidden');
+                    };
+                    row.appendChild(bt);
+                });
+                bar.appendChild(row); bar.appendChild(panel);
+                boxes[boxes.length - 1].parentNode.insertBefore(bar, boxes[boxes.length - 1]);
+                document.addEventListener('click', function(e) { if (!bar.contains(e.target)) closeP(); });
+                boxes.forEach(function(b) { b.style.display = 'none'; });
+            } catch (e) { console.warn('AI menu not applied; old buttons kept visible:', e); }
+        }
+        aiMenuInit();
+
+        // ================= v2: publish report remarks to student portal (studentView/<id>/remarks) =================
+        function aiRemarksLoad() { try { return JSON.parse(localStorage.getItem('saplings_v2_remarks') || '{}'); } catch (e) { return {}; } }
+        async function aiRemarksPush(quiet) {
+            const R = aiRemarksLoad(); let ok = 0, bad = 0;
+            for (const sid of Object.keys(R)) { if (!students.some(function(x) { return x.id === sid; })) continue; try { const r = await p9Req('PATCH', 'studentView/' + sid, { remarks: R[sid] }); if (r && r.ok) ok++; else bad++; } catch (e) { bad++; } }
+            return { ok: ok, bad: bad };
+        }
+        async function aiRemarksPublish() {
+            const st = document.getElementById('ai-tools-status'), out = document.getElementById('ai-tools-out'), cls = document.getElementById('ai-tools-sel').value;
+            const lines = out.value.split('\n').map(function(l) { return l.replace(/^\s*(\d+[.)]|[-•*])\s*/, '').trim(); }).filter(Boolean);
+            const R = aiRemarksLoad(), pool = students.filter(function(x) { return matchesBranch(x.branchId) && x.className === cls; }); let n = 0, miss = [];
+            lines.forEach(function(l) { const i = l.indexOf(':'); if (i < 1) return; const nm = l.slice(0, i).trim().toLowerCase(), tx = l.slice(i + 1).trim(); if (!tx) return;
+                const s = pool.find(function(x) { return String(x.name).trim().toLowerCase() === nm; }); if (s) { R[s.id] = { t: tx, d: new Date().toLocaleDateString() }; n++; } else miss.push(l.slice(0, i)); });
+            if (!n) { st.innerText = 'Koi naam match nahi hua. Format: Naam: remark (naam bilkul students wala).'; return; }
+            if (!confirm(n + ' bachon ke remarks student portal par dikhaye jayenge. Parh liye hain?')) return;
+            try { localStorage.setItem('saplings_v2_remarks', JSON.stringify(R)); } catch (e) { st.innerText = 'Browser mein save nahi ho saka.'; return; }
+            st.innerText = 'Publish ho raha hai...'; const r = await aiRemarksPush();
+            st.innerText = r.ok + ' bachon ko publish hua' + (r.bad ? ', ' + r.bad + ' fail (cloud login check karein)' : '') + (miss.length ? '. Match nahi hue: ' + miss.slice(0, 5).join(', ') : '') + '.';
+        }
+        (function() { const o = p9Publish; p9Publish = async function(f) { const r = await o(f); try { await aiRemarksPush(true); } catch (e) { /* ignore */ } return r; }; })();
     </script>
 </body>
 </html>
