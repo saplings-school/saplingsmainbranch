@@ -123,7 +123,7 @@ let AUTH = null;   // { idToken, refreshToken, expiresAt, uid }
 function idKey(id) { return String(id).trim().toLowerCase().replace(/[^a-z0-9._-]/g, '_'); }
 function loginEmail(id) { return idKey(id) + '@' + AUTH_ROLE + '.saira.invalid'; }
 function pinPassword(pin) { return 'PIN' + String(pin).trim(); }
-function saveSession(id) { try { localStorage.setItem('saira_student_login', JSON.stringify({ id: id, rt: AUTH.refreshToken })); } catch (e) { /* storage blocked */ } }
+function saveSession(id) { try { localStorage.setItem('saira_student_login', JSON.stringify({ id: id, rt: AUTH.refreshToken, uid: AUTH.uid })); } catch (e) { /* storage blocked */ } }
 async function authSignIn(id, pin) {
     const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + AUTH_KEY, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -156,10 +156,26 @@ function authErrorText(e) {
     return 'Could not connect. Please check your internet and try again.';
 }
 function dbUrl(path) { return FB + '/' + path.split('/').map(encodeURIComponent).join('/') + '.json'; }
+
+// ---- Offline cache: the last data received is kept on this device and shown when there is no internet ----
+const CACHE_PFX = 'saplings_cache_';
+let OFFLINE = false;
+function isNetErr(e) { return e instanceof TypeError || navigator.onLine === false; }
+function cacheSet(key, data) { try { localStorage.setItem(CACHE_PFX + key, JSON.stringify(data)); } catch (e) { /* storage full */ } }
+function cacheGet(key) { try { const v = localStorage.getItem(CACHE_PFX + key); return v === null ? undefined : JSON.parse(v); } catch (e) { return undefined; } }
+function cacheClear() { try { Object.keys(localStorage).filter(function(k) { return k.indexOf(CACHE_PFX) === 0; }).forEach(function(k) { localStorage.removeItem(k); }); } catch (e) { /* ignore */ } }
+function offlineNote() { const el = $('load-status'); if (el) el.innerText = OFFLINE ? 'Offline: showing the last saved information.' : ''; }
 async function fbGet(path) {
-    const res = await fetch(dbUrl(path) + '?auth=' + encodeURIComponent(await authToken()));
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    return res.json();
+    try {
+        const res = await fetch(dbUrl(path) + '?auth=' + encodeURIComponent(await authToken()));
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        cacheSet(path, data);
+        return data;
+    } catch (e) {
+        if (isNetErr(e)) { const c = cacheGet(path); if (c !== undefined) { OFFLINE = true; return c; } }
+        throw e;
+    }
 }
 async function fbGetPublic(path) {
     const res = await fetch(dbUrl(path));
@@ -171,6 +187,7 @@ let S = null;   // everything about the logged-in student
 
 let VIEW = null;   // this student's published record (studentView/<id>)
 async function loadStudent(id) {
+    OFFLINE = false;
     const role = await fbGet('roles/' + AUTH.uid);
     if (!role || role.role !== 'student' || role.id !== id) throw new Error('NOROLE');
     VIEW = await fbGet('studentView/' + id);
@@ -233,6 +250,7 @@ async function openApp(stu) {
     $('hdr-name').innerText = stu.name + ' • ' + stu.className;
     if (S.settings.logo) $('hdr-logo').innerHTML = '<img src="' + esc(S.settings.logo) + '" class="w-full h-full object-cover">';
     showTab('home');
+    offlineNote();
 }
 
 async function refreshAll() {
@@ -242,12 +260,13 @@ async function refreshAll() {
         const stu = await loadStudent(S.stu.id);
         if (stu) await loadAll(stu);
         showTab(S.tab);
-        $('load-status').innerText = '';
+        offlineNote();
     } catch (e) { $('load-status').innerText = 'Could not refresh. Check your internet.'; }
 }
 
 function logout() {
     localStorage.removeItem('saira_student_login');
+    cacheClear();
     AUTH = null; VIEW = null; S = null;
     $('main-app').classList.add('hidden');
     $('login-screen').classList.remove('hidden');
@@ -487,10 +506,25 @@ window.onload = async function() {
     try { saved = JSON.parse(localStorage.getItem('saira_student_login')); } catch (e) { saved = null; }
     if (saved && saved.id && saved.rt) {
         $('login-id').value = saved.id;
-        try { await authRefresh(saved.rt); await handleLogin('saved'); } catch (e) { localStorage.removeItem('saira_student_login'); }
+        try { await authRefresh(saved.rt); await handleLogin('saved'); }
+        catch (e) {
+            if (isNetErr(e) && saved.uid) { AUTH = { idToken: '', refreshToken: saved.rt, expiresAt: 0, uid: saved.uid }; await handleLogin('saved'); }
+            else localStorage.removeItem('saira_student_login');
+        }
     }
 };
+
+// ===== v2: Teacher/School remarks on the Results tab (read-only; added, nothing old changed) =====
+(function() {
+    const _orig = renderResults;
+    renderResults = function() {
+        _orig();
+        try {
+            const r = VIEW && VIEW.remarks; if (!r || !r.t) return;
+            $('tab-results').insertAdjacentHTML('beforeend', card('<p class="text-[11px] font-bold text-amber-700 mb-1">📝 Remarks from school <span class="text-slate-400 font-normal">رپورٹ ریمارکس</span></p><p class="text-sm text-slate-700 whitespace-pre-line">' + esc(r.t) + '</p>' + (r.d ? '<p class="text-[10px] text-slate-400 mt-2">' + esc(r.d) + '</p>' : '')));
+        } catch (e) { console.warn('remarks not shown', e); }
+    };
+})();
 </script>
 </body>
 </html>
-
